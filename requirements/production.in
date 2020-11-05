@@ -1,5 +1,6 @@
 # This file installs the dependencies required for the application to run
 
+cryptography
 flask
 flask-cors
 flask-jwt-extended

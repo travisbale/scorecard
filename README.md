@@ -8,26 +8,26 @@ Scorecard is a score keeping API service for golf. Scorecard is able to provide 
 
 I haven't written a proper Postman collection to document the API, but in the meantime I've listed and partially described the available endpoints below.
 
-#### `GET /golfers`
+#### `GET /players`
 
-- Get the list of golfers
+- Get the list of players
 
-#### `POST /golfers`
+#### `POST /players`
 
-- Create a new golfer
-- Golfers need to be issued a JWT with a corresponding email address if they want to log in to update their scores
+- Create a new player
+- Players need to be issued a JWT with a corresponding email address if they want to log in to update their scores
 
-#### `GET /golfers/{id}`
+#### `GET /players/{id}`
 
-- Get a specific golfer
+- Get a specific player
 
-#### `PUT /golfers/{id}`
+#### `PUT /players/{id}`
 
-- Update an existing golfer
+- Update an existing player
 
-#### `DELETE /golfers/{id}`
+#### `DELETE /players/{id}`
 
-- Delete a specific golfer
+- Delete a specific player
 
 #### `GET /tournaments`
 
@@ -71,15 +71,15 @@ I haven't written a proper Postman collection to document the API, but in the me
 
 - Remove the team from the tournament and delete it
 
-#### `GET /tournaments/{id}/teams{id}/golfers`
+#### `GET /tournaments/{id}/teams{id}/players`
 
-- Get the list of golfers on the particular team
+- Get the list of players on the particular team
 
-#### `POST /tournaments/{id}/teams{id}/golfers`
+#### `POST /tournaments/{id}/teams{id}/players`
 
 - Add new players to the team
 
-#### `DELETE /tournaments/{id}/teams{id}/golfers`
+#### `DELETE /tournaments/{id}/teams{id}/players`
 
 - Remove players from the team
 
@@ -115,29 +115,29 @@ I haven't written a proper Postman collection to document the API, but in the me
 
 - Delete the tee time
 
-#### `GET /tournaments/{id}/rounds/{id}/tee-times/{id}/golfers`
+#### `GET /tournaments/{id}/rounds/{id}/tee-times/{id}/players`
 
-- Get the list of golfers assigned to the tee time
+- Get the list of players assigned to the tee time
 
-#### `POST /tournaments/{id}/rounds/{id}/tee-times/{id}/golfers`
+#### `POST /tournaments/{id}/rounds/{id}/tee-times/{id}/players`
 
-- Assign golfers to the tee time
+- Assign players to the tee time
 
-#### `DELETE /tournaments/{id}/rounds/{id}/tee-times/{id}/golfers`
+#### `DELETE /tournaments/{id}/rounds/{id}/tee-times/{id}/players`
 
-- Unassign golfers from the tee time
+- Unassign players from the tee time
 
-#### `GET /tournaments/{id}/rounds/{id}/tee-times/{id}/golfers/{id}/scores`
+#### `GET /tournaments/{id}/rounds/{id}/tee-times/{id}/players/{id}/scores`
 
-- Get the golfer's score
+- Get the player's score
 
-#### `POST /tournaments/{id}/rounds/{id}/tee-times/{id}/golfers/{id}/scores`
+#### `POST /tournaments/{id}/rounds/{id}/tee-times/{id}/players/{id}/scores`
 
-- Record a new score for the golfer for the round
+- Record a new score for the player for the round
 
-#### `DELETE /tournaments/{id}/rounds/{id}/tee-times/{id}/golfers/{id}/scores`
+#### `DELETE /tournaments/{id}/rounds/{id}/tee-times/{id}/players/{id}/scores`
 
-- Delete a score for the golfer for the round
+- Delete a score for the player for the round
 
 ## Development Setup
 

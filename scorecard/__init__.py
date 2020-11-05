@@ -40,4 +40,13 @@ def _initialize_extensions(app):
 
 
 def _register_blueprints(app):
-    pass
+    from scorecard import exceptions, models, resources
+
+    # Register the models blueprint
+    app.register_blueprint(models.bp)
+
+    # Register the exception handlers
+    app.register_blueprint(exceptions.bp)
+
+    # Register the application endpoints
+    app.register_blueprint(resources.bp, url_prefix="/scorecard/v1")
