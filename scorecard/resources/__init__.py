@@ -2,11 +2,12 @@
 
 from flask import Blueprint
 
-from . import players, tournaments
+from . import players, teams, tournaments
 
 # Create a blueprint for the application resources
 bp = Blueprint("api", __name__)
 
 # Register the resources for each module
 players.register_resources(bp)
+teams.register_resources(bp)
 tournaments.register_resources(bp)
