@@ -21,6 +21,8 @@ class Team(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), nullable=False)
 
+    members = db.relationship("TeamMember", back_populates="team", cascade="all, delete-orphan")
+
     def __init__(self, name):
         self.name = name
 

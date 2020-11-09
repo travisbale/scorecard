@@ -19,6 +19,8 @@ class Player(BaseModel):
     last_name = db.Column(db.String(32), nullable=False)
     hdcp = db.Column(db.Integer, default=0, nullable=False)
 
+    tournament_participations = db.relationship("TeamMember", back_populates="player", cascade="all, delete-orphan")
+
     def __init__(self, email, first_name, last_name, hdcp=0):
         self.email = email
         self.first_name = first_name
