@@ -26,6 +26,7 @@ class MatchParticipant(BaseModel):
 
     match = db.relationship("Match", back_populates="participants")
     player = db.relationship("Player", back_populates="match_participations")
+    scores = db.relationship("Score", back_populates="participant", cascade="all, delete-orphan")
 
     def __init__(self, tournament_id, match_id, player_id):
         self.tournament_id = tournament_id

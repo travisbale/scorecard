@@ -16,6 +16,7 @@ class Match(BaseModel):
             ["course_id", "tee_color_id"], ["tee_sets.course_id", "tee_sets.tee_color_id"], ondelete="CASCADE"
         ),
         db.UniqueConstraint("id", "tournament_id"),
+        db.UniqueConstraint("id", "course_id", "tee_color_id", name="uix_id_course_id_tee_color_id"),
     )
 
     id = db.Column(db.Integer, primary_key=True)

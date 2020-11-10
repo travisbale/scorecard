@@ -9,6 +9,7 @@ from . import (
     match_participants,
     matches,
     players,
+    scores,
     team_members,
     teams,
     tee_colors,
@@ -31,3 +32,4 @@ holes.register_resources(bp)
 match_formats.register_resources(bp)
 match_participants.register_resources(bp)
 matches.register_resources(bp)
+scores.register_resources(bp)
