@@ -2,7 +2,7 @@
 
 from flask import Blueprint
 
-from . import courses, holes, match_formats, players, team_members, teams, tee_colors, tee_sets, tournaments
+from . import courses, holes, match_formats, matches, players, team_members, teams, tee_colors, tee_sets, tournaments
 
 # Create a blueprint for the application resources
 bp = Blueprint("api", __name__)
@@ -17,3 +17,4 @@ tee_colors.register_resources(bp)
 tee_sets.register_resources(bp)
 holes.register_resources(bp)
 match_formats.register_resources(bp)
+matches.register_resources(bp)
