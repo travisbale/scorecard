@@ -20,6 +20,7 @@ class Player(BaseModel):
     hdcp = db.Column(db.Integer, default=0, nullable=False)
 
     tournament_participations = db.relationship("TeamMember", back_populates="player", cascade="all, delete-orphan")
+    match_participations = db.relationship("MatchParticipant", back_populates="player")
 
     def __init__(self, email, first_name, last_name, hdcp=0):
         self.email = email

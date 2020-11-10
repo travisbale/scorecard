@@ -27,12 +27,18 @@ class Match(BaseModel):
 
     tournament = db.relationship("Tournament", back_populates="matches")
     tee_set = db.relationship("TeeSet")
+    participants = db.relationship("MatchParticipant", back_populates="match", cascade="all, delete-orphan")
 
     def __init__(self, course_id, tee_color_id, match_format_id, tee_time):
         self.course_id = course_id
         self.tee_color_id = tee_color_id
         self.match_format_id = match_format_id
         self.tee_time = tee_time
+
+    @property
+    def players(self):
+        """Return the list of players currently participating in the match."""
+        return [participant.player for participant in self.participants]
 
 
 class MatchSchema(BaseSchema):
