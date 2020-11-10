@@ -17,6 +17,7 @@ class Course(BaseModel):
     name = db.Column(db.String(255), unique=True, nullable=False)
 
     tee_sets = db.relationship("TeeSet", back_populates="course", cascade="all, delete-orphan")
+    holes = db.relationship("Hole", back_populates="course", cascade="all, delete-orphan", sync_backref=False)
 
     def __init__(self, name):
         self.name = name
