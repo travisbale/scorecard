@@ -28,8 +28,7 @@ class Hole(BaseModel):
     hdcp = db.Column(db.Integer, nullable=False)
     yards = db.Column(db.Integer, nullable=False)
 
-    course = db.relationship("Course", back_populates="holes", viewonly=True)
-    tee_set = db.relationship("TeeSet", back_populates="holes", viewonly=True)
+    tee_set = db.relationship("TeeSet", back_populates="holes")
     tee_color = db.relationship("TeeColor")
 
     def __init__(self, number, par, hdcp, yards):

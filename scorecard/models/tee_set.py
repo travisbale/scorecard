@@ -25,7 +25,7 @@ class TeeSet(BaseModel):
 
     course = db.relationship("Course", back_populates="tee_sets")
     tee_color = db.relationship("TeeColor")
-    holes = db.relationship("Hole", back_populates="tee_set", cascade="all, delete-orphan", sync_backref=False)
+    holes = db.relationship("Hole", back_populates="tee_set", cascade="all, delete-orphan")
 
     def __init__(self, tee_color_id, slope, rating):
         self.tee_color_id = tee_color_id
