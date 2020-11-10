@@ -10,3 +10,4 @@ gunicorn
 marshmallow
 psycopg2-binary
 pytest
+simplejson
