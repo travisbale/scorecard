@@ -33,8 +33,17 @@ class MatchParticipant(BaseModel):
         self.match_id = match_id
         self.player_id = player_id
 
+    @property
+    def team(self):
+        """Return the team the player played for during the match."""
+        return self.player.get_team(self.tournament_id)
+
 
 class MatchParticipantSchema(BaseSchema):
     """Serializes and deserializes match participants."""
 
     player_ids = fields.List(fields.Integer, required=True)
+    team = fields.Pluck("TeamSchema", "name", dump_only=True)
+    player_id = fields.Integer(attribute="player.id", dump_only=True)
+    last_name = fields.String(attribute="player.last_name", dump_only=True)
+    full_name = fields.String(attribute="player.full_name", dump_only=True)

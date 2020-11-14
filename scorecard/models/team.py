@@ -26,6 +26,28 @@ class Team(BaseModel):
     def __init__(self, name):
         self.name = name
 
+    @property
+    def captain(self):
+        """Return the captain of the team."""
+        captains = list(filter(lambda member: member.is_captain, self.members))
+        return captains[0].player if len(captains) > 0 else None
+
+    @property
+    def points(self):
+        """Return the teams total points."""
+        points = 0
+
+        if len(self.members) > 0:
+            for match in self.members[0].tournament.matches:
+                winner = match.winner
+
+                if winner == self.name:
+                    points += 1
+                elif winner == "Tied":
+                    points += points + 0.5
+
+        return points
+
     def __repr__(self):
         return f"<Team {self.name}>"
 
@@ -35,6 +57,8 @@ class TeamSchema(BaseSchema):
 
     id = fields.Integer()
     name = fields.String(required=True)
+    captain = fields.Nested("PlayerSchema", dump_only=True)
+    points = fields.Float(dump_only=True)
 
     @post_load
     def load_team(self, data, **kwargs):

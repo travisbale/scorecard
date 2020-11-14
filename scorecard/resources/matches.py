@@ -37,12 +37,12 @@ class MatchesResource(MethodView):
 class MatchResource(MethodView):
     """Dispatches request methods to retrieve and delete matches."""
 
-    def get(self, tournament_id, match_id):
+    def get(self, match_id):
         """Return the match with the given ID."""
         match = Match.query.get_or_404(match_id, "The match does not exist")
         return jsonify(schema.dump(match)), HTTPStatus.OK
 
-    def delete(self, tournament_id, match_id):
+    def delete(self, match_id):
         """Delete the match with the given ID."""
         match = Match.query.get_or_404(match_id, "The match does not exist")
         match.delete()
@@ -52,6 +52,4 @@ class MatchResource(MethodView):
 def register_resources(bp):
     """Add the resource routes to the application blueprint."""
     bp.add_url_rule("/tournaments/<int:tournament_id>/matches", view_func=MatchesResource.as_view("matches_resource"))
-    bp.add_url_rule(
-        "/tournaments/<int:tournament_id>/matches/<int:match_id>", view_func=MatchResource.as_view("match_resource")
-    )
+    bp.add_url_rule("/matches/<int:match_id>", view_func=MatchResource.as_view("match_resource"))

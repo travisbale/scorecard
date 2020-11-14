@@ -32,6 +32,16 @@ class TeeSet(BaseModel):
         self.slope = slope
         self.rating = rating
 
+    @property
+    def yards(self):
+        """Return the total yards for the tee set."""
+        return sum(map(lambda hole: hole.yards, self.holes))
+
+    @property
+    def par(self):
+        """Return the par for the tee set."""
+        return sum(map(lambda hole: hole.par, self.holes))
+
     def __repr__(self):
         return f"<Tees {self.id}>"
 
@@ -42,7 +52,11 @@ class TeeSetSchema(BaseSchema):
     tee_color_id = fields.Integer(required=True)
     slope = fields.Integer(required=True, validate=validate.Range(min=MIN_SLOPE, max=MAX_SLOPE))
     rating = fields.Decimal(required=True)
+    course = fields.Pluck("CourseSchema", "name")
+    yards = fields.Integer(dump_only=True)
+    par = fields.Integer(dump_only=True)
     tee_color = fields.Pluck("TeeColorSchema", "color")
+    holes = fields.Nested("HoleSchema", many=True)
 
     class Meta:
         """Override the json module so decimal.Decimal can be serialized."""

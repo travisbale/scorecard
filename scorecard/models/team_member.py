@@ -14,12 +14,13 @@ class TeamMember(BaseModel):
 
     tournament_id = db.Column(db.Integer, db.ForeignKey("tournaments.id", ondelete="CASCADE"), primary_key=True)
     player_id = db.Column(db.Integer, db.ForeignKey("players.id", ondelete="CASCADE"), primary_key=True)
-    team_id = db.Column(db.Integer, db.ForeignKey("teams.id", ondelete="CASCADE"))
+    team_id = db.Column(db.Integer, db.ForeignKey("teams.id", ondelete="CASCADE"), nullable=False)
     is_captain = db.Column(db.Boolean, default=False, nullable=False)
 
     tournament = db.relationship("Tournament", back_populates="participants")
-    player = db.relationship("Player", back_populates="tournament_participations")
+    player = db.relationship("Player", back_populates="memberships")
     team = db.relationship("Team", back_populates="members")
+    matches = db.relationship("MatchParticipant")
 
     def __init__(self, tournament_id, team_id, player_id, is_captain):
         self.tournament_id = tournament_id

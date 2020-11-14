@@ -19,7 +19,7 @@ class Player(BaseModel):
     last_name = db.Column(db.String(32), nullable=False)
     hdcp = db.Column(db.Integer, default=0, nullable=False)
 
-    tournament_participations = db.relationship("TeamMember", back_populates="player", cascade="all, delete-orphan")
+    memberships = db.relationship("TeamMember", back_populates="player", cascade="all, delete-orphan")
     match_participations = db.relationship("MatchParticipant", back_populates="player")
 
     def __init__(self, email, first_name, last_name, hdcp=0):
@@ -27,6 +27,19 @@ class Player(BaseModel):
         self.first_name = first_name
         self.last_name = last_name
         self.hdcp = hdcp
+
+    @property
+    def full_name(self):
+        """Return the player's full name."""
+        return f"{self.first_name} {self.last_name}"
+
+    def get_team(self, tournament_id):
+        """Return the team the player played on during the tournament."""
+        for membership in self.memberships:
+            if membership.tournament_id == tournament_id:
+                return membership.team
+
+        raise ValueError(f"Player did not play in tournament with ID {tournament_id}")
 
     def __repr__(self):
         return f"<Player {self.first_name} {self.last_name}>"
@@ -39,6 +52,7 @@ class PlayerSchema(BaseSchema):
     email = fields.String(required=True)
     first_name = fields.String(required=True)
     last_name = fields.String(required=True)
+    full_name = fields.String(dump_only=True)
     hdcp = fields.Integer()
 
     @post_load

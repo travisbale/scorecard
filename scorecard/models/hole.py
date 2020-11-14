@@ -29,7 +29,6 @@ class Hole(BaseModel):
     yards = db.Column(db.Integer, nullable=False)
 
     tee_set = db.relationship("TeeSet", back_populates="holes")
-    tee_color = db.relationship("TeeColor")
 
     def __init__(self, number, par, hdcp, yards):
         self.number = number
@@ -42,7 +41,6 @@ class HoleSchema(BaseSchema):
     """Serializes and deserializes golf course holes."""
 
     number = fields.Integer(required=True)
-    tee_color = fields.Pluck("TeeColorSchema", "color", dump_only=True)
     par = fields.Integer(required=True)
     hdcp = fields.Integer(required=True)
     yards = fields.Integer(required=True)
