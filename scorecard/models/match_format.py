@@ -11,6 +11,7 @@ class MatchFormat(BaseModel):
     """Represents the format of a match."""
 
     __tablename__ = "match_formats"
+    __table_args__ = (db.UniqueConstraint("name", name="uix_name"),)
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)

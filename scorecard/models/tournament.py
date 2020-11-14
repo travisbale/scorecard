@@ -12,6 +12,7 @@ class Tournament(BaseModel):
     """Represents a tournament."""
 
     __tablename__ = "tournaments"
+    ___table_args___ = (db.UniqueConstraint("name", "start_date", "end_date", name="uix_name_start_date_end_date"),)
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
