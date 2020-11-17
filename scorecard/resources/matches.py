@@ -7,13 +7,14 @@ from flask.views import MethodView
 from werkzeug.exceptions import BadRequest
 
 from scorecard.models.match import Match, MatchSchema
+from scorecard.models.player import Player
 from scorecard.models.tee_set import TeeSet
 from scorecard.models.tournament import Tournament
 
 schema = MatchSchema()
 
 
-class MatchesResource(MethodView):
+class TournamentMatchesResource(MethodView):
     """Dispatches request methods to retrieve or create matches."""
 
     def get(self, tournament_id):
@@ -34,6 +35,15 @@ class MatchesResource(MethodView):
         return jsonify(schema.dump(match)), HTTPStatus.CREATED
 
 
+class PlayerMatchesResource(MethodView):
+    """Dispatches request methods to retrieve the matches for a player."""
+
+    def get(self, player_id):
+        """Return the matches that the player has played in."""
+        player = Player.query.get_or_404(player_id, "The player does not exist")
+        return jsonify(schema.dump(player.matches, many=True)), HTTPStatus.OK
+
+
 class MatchResource(MethodView):
     """Dispatches request methods to retrieve and delete matches."""
 
@@ -51,5 +61,11 @@ class MatchResource(MethodView):
 
 def register_resources(bp):
     """Add the resource routes to the application blueprint."""
-    bp.add_url_rule("/tournaments/<int:tournament_id>/matches", view_func=MatchesResource.as_view("matches_resource"))
+    bp.add_url_rule(
+        "/tournaments/<int:tournament_id>/matches",
+        view_func=TournamentMatchesResource.as_view("tournament_matches_resource"),
+    )
     bp.add_url_rule("/matches/<int:match_id>", view_func=MatchResource.as_view("match_resource"))
+    bp.add_url_rule(
+        "/players/<int:player_id>/matches", view_func=PlayerMatchesResource.as_view("player_matches_resource")
+    )

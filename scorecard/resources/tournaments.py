@@ -9,6 +9,7 @@ from http import HTTPStatus
 from flask import jsonify, request
 from flask.views import MethodView
 
+from scorecard.models.player import Player
 from scorecard.models.tournament import Tournament, TournamentSchema
 
 from .view_decorators import permission_required
@@ -31,6 +32,15 @@ class TournamentsResource(MethodView):
         return jsonify(schema.dump(tournament)), HTTPStatus.CREATED
 
 
+class PlayerTournamentsResource(MethodView):
+    """Dispatches request methods to retrieve tournaments a player has played in."""
+
+    def get(self, player_id):
+        """Return a list of the tournaments the player has played in."""
+        player = Player.query.get_or_404(player_id, "The player does not exist")
+        return jsonify(schema.dump(player.tournaments, many=True)), HTTPStatus.OK
+
+
 class TournamentResource(MethodView):
     """Dispatches request methods to retrieve or delete an existing tournament."""
 
@@ -51,3 +61,7 @@ def register_resources(bp):
     """Add the resource routes to the application blueprint."""
     bp.add_url_rule("/tournaments", view_func=TournamentsResource.as_view("tournaments_resource"))
     bp.add_url_rule("/tournaments/<int:id>", view_func=TournamentResource.as_view("tournament_resource"))
+    bp.add_url_rule(
+        "/players/<int:player_id>/tournaments",
+        view_func=PlayerTournamentsResource.as_view("player_tournaments_resource"),
+    )
