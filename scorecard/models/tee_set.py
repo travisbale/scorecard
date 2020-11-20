@@ -61,7 +61,7 @@ class TeeSetSchema(BaseSchema):
     class Meta:
         """Override the json module so decimal.Decimal can be serialized."""
 
-        json_module = simplejson
+        render_module = simplejson
 
     @post_load
     def load_tees(self, data, **kwargs):
