@@ -4,7 +4,35 @@ from flask import Blueprint
 
 from scorecard import db
 
+from .course import Course
+from .hole import Hole
+from .match import Match
+from .match_format import MatchFormat
+from .match_participant import MatchParticipant
+from .player import Player
+from .score import Score
+from .team import Team
+from .team_member import TeamMember
+from .tee_color import TeeColor
+from .tee_set import TeeSet
+from .tournament import Tournament
+
 bp = Blueprint("database", __name__)
+
+__all__ = [
+    "Course",
+    "Hole",
+    "Match",
+    "MatchFormat",
+    "MatchParticipant",
+    "Player",
+    "Score",
+    "Team",
+    "TeamMember",
+    "TeeColor",
+    "TeeSet",
+    "Tournament",
+]
 
 
 @bp.after_app_request

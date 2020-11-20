@@ -17,6 +17,12 @@ pipeline {
       }
     }
 
+    stage('Test') {
+      steps {
+        sh 'docker run --rm --entrypoint python scorecard:$IMAGE_TAG -m pytest'
+      }
+    }
+
     stage('Deploy') {
       steps {
         // Don't fail the build if the container does not exist
