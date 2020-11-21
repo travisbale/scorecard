@@ -18,8 +18,10 @@ def create_app(config="scorecard.config.Config"):
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__, instance_relative_config=True)
 
-    # Read in the application configuration from config.py
-    app.config.from_object(config)
+    # Manually push a context so the configuration has access to current_app
+    with app.app_context():
+        # Read in the application configuration
+        app.config.from_object(config)
 
     # Enable CORS so the application can respond to requests from a subdomain
     CORS(app, origins=os.getenv("CORS_ORIGIN"), supports_credentials=True)
