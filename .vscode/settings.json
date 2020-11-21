@@ -17,6 +17,9 @@
     ],
     "python.linting.enabled": true,
     "python.linting.pydocstyleEnabled": true,
+    "python.linting.pydocstyleArgs": [
+        "--match='(?!test_).*\\.py'",
+    ],
     "python.linting.flake8Enabled": true,
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [

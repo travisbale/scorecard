@@ -11,4 +11,5 @@ marshmallow
 numpy
 psycopg2-binary
 pytest
+coverage
 simplejson
