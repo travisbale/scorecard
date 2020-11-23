@@ -27,10 +27,11 @@ class TeeSet(BaseModel):
     tee_color = db.relationship("TeeColor")
     holes = db.relationship("Hole", back_populates="tee_set", cascade="all, delete-orphan")
 
-    def __init__(self, tee_color_id, slope, rating):
+    def __init__(self, tee_color_id, slope, rating, course_id=None):
         self.tee_color_id = tee_color_id
         self.slope = slope
         self.rating = rating
+        self.course_id = course_id
 
     @property
     def yards(self):

@@ -30,11 +30,13 @@ class Hole(BaseModel):
 
     tee_set = db.relationship("TeeSet", back_populates="holes")
 
-    def __init__(self, number, par, hdcp, yards):
+    def __init__(self, number, par, hdcp, yards, course_id=None, tee_color_id=None):
         self.number = number
         self.par = par
         self.hdcp = hdcp
         self.yards = yards
+        self.course_id = course_id
+        self.tee_color_id = tee_color_id
 
 
 class HoleSchema(BaseSchema):
@@ -46,6 +48,6 @@ class HoleSchema(BaseSchema):
     yards = fields.Integer(required=True)
 
     @post_load
-    def load_tee(self, data, **kwargs):
+    def load_hole(self, data, **kwargs):
         """Create a tee useing the deserialized values."""
         return Hole(**data)
