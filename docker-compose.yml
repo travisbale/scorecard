@@ -13,6 +13,16 @@ services:
     volumes:
       - ./:/app
 
+  scorecard-test:
+    image: python:3.8-slim
+    restart: always
+    container_name: scorecard-test
+    entrypoint: [./entrypoint.sh, development]
+    env_file: ./env/test.env
+    working_dir: /app
+    volumes:
+      - ./:/app
+
   scorecard-db:
     image: postgres:12-alpine
     restart: always

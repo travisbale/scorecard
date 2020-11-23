@@ -19,7 +19,12 @@ pipeline {
 
     stage('Test') {
       steps {
-        sh 'docker run --rm --entrypoint python scorecard:$IMAGE_TAG -m pytest'
+        sh '''
+          docker run --rm \
+            --env-file /home/env/scorecard/test.env \
+            --network=ec2-user_default \
+            --entrypoint python scorecard:$IMAGE_TAG -m pytest
+        '''
       }
     }
 
