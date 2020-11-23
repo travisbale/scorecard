@@ -24,6 +24,7 @@ class BaseModel(db.Model):
         """
         db.session.add(self)
         db.session.flush()
+        return self
 
     def merge(self):
         """
@@ -37,6 +38,7 @@ class BaseModel(db.Model):
         """
         db.session.merge(self)
         db.session.flush()
+        return self
 
     def delete(self):
         """

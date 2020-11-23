@@ -28,8 +28,7 @@ def test_course_schema_load_course_raises_validation_error_if_dictionary_has_no_
 
 
 def test_saving_course_with_duplicate_name_raises_sqlalchemy_integrity_error(rollback_db):
-    course = Course("course name")
-    course.save()
+    Course("course name").save()
     course = Course("course name")
 
     with pytest.raises(IntegrityError):
