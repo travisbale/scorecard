@@ -2,9 +2,9 @@
 
 import pytest
 from marshmallow.exceptions import ValidationError
+from sqlalchemy.exc import IntegrityError
 
 from scorecard.models.course import Course, CourseSchema
-from sqlalchemy.exc import IntegrityError
 
 
 @pytest.fixture(scope="module")

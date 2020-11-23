@@ -13,7 +13,9 @@
         "--thirdparty",
         "marshmallow",
         "--thirdparty",
-        "flask*"
+        "flask*",
+        "--thirdparty",
+        "sqlalchemy"
     ],
     "python.linting.enabled": true,
     "python.linting.pydocstyleEnabled": true,
