@@ -7,68 +7,60 @@ from sqlalchemy.exc import IntegrityError
 from scorecard.models.match_format import MatchFormat, MatchFormatSchema
 
 
-@pytest.fixture
-def invalid_format(rollback_db):
-    match_format = MatchFormat("format", "description")
-    yield match_format
+class TestMatchFormat:
+    @pytest.fixture
+    def match_format(self):
+        return MatchFormat("format", "description")
 
-    with pytest.raises(IntegrityError):
-        match_format.save()
+    @pytest.fixture
+    def invalid_format(self, match_format, rollback_db):
+        yield match_format
 
+        with pytest.raises(IntegrityError):
+            match_format.save()
 
-@pytest.fixture(scope="module")
-def schema():
-    return MatchFormatSchema()
+    def test_create_new_match_format(self, match_format):
+        assert match_format.name == "format"
+        assert match_format.description == "description"
 
+    def test_save_duplicate_name_raises_integrity_error(self, invalid_format):
+        MatchFormat("format", "description").save()
 
-@pytest.fixture
-def invalid_format_dict(schema):
-    format_dict = dict(name="format", description="description")
-    yield format_dict
+    def test_save_without_name_raises_integrity_error(self, invalid_format):
+        invalid_format.name = None
 
-    with pytest.raises(ValidationError):
-        schema.load(format_dict)
+    def test_save_without_description_raises_integrity_error(self, invalid_format):
+        invalid_format.description = None
 
-
-def test_create_new_match_format():
-    match_format = MatchFormat("a format", "a description")
-    assert match_format.name == "a format"
-    assert match_format.description == "a description"
-
-
-def test_saving_match_format_with_duplicate_name_raises_integrity_error(invalid_format):
-    MatchFormat("format", "description").save()
-
-
-def test_saving_match_format_without_name_raises_integrity_error(invalid_format):
-    invalid_format.name = None
+    def test_match_format_schema_dump(self, match_format, rollback_db):
+        format_dict = MatchFormatSchema().dump(match_format.save())
+        assert format_dict["id"] == match_format.id
+        assert format_dict["name"] == match_format.name
+        assert format_dict["description"] == match_format.description
 
 
-def test_saving_match_format_without_description_raises_integrity_error(invalid_format):
-    invalid_format.description = None
+class TestMatchFormatSchema:
+    @pytest.fixture(scope="class")
+    def schema(self):
+        return MatchFormatSchema()
 
+    @pytest.fixture
+    def invalid_dict(self, schema):
+        format_dict = dict(name="format", description="description")
+        yield format_dict
 
-def test_match_format_schema_load_returns_match_format_instance(schema):
-    match_format = schema.load(dict(name="format", description="description"))
-    assert isinstance(match_format, MatchFormat)
+        with pytest.raises(ValidationError):
+            schema.load(format_dict)
 
+    def test_load_returns_match_format_instance(self, schema):
+        match_format = schema.load(dict(name="format", description="description"))
+        assert isinstance(match_format, MatchFormat)
 
-def test_match_format_schema_raises_validation_error_if_dictionary_has_no_name_property(invalid_format_dict):
-    invalid_format_dict["name"] = None
+    def test_load_raises_validation_error_if_dictionary_has_no_name_property(self, invalid_dict):
+        invalid_dict["name"] = None
 
+    def test_load_raises_validation_error_if_dictionary_has_no_description_property(self, invalid_dict):
+        invalid_dict["description"] = None
 
-def test_match_format_schema_raises_validation_error_if_dictionary_has_no_description_property(invalid_format_dict):
-    invalid_format_dict["description"] = None
-
-
-def test_match_format_schema_raises_validation_error_if_dictionary_has_an_id_property(invalid_format_dict):
-    invalid_format_dict["id"] = 1
-
-
-def test_match_format_schema_dump(schema, rollback_db):
-    match_format = MatchFormat("format", "description").save()
-    dict = schema.dump(match_format)
-
-    assert dict["id"] is not None and dict["id"] == match_format.id
-    assert dict["name"] is not None and dict["name"] == match_format.name
-    assert dict["description"] is not None and dict["description"] == match_format.description
+    def test_load_raises_validation_error_if_dictionary_has_an_id_property(self, invalid_dict):
+        invalid_dict["id"] = 1
