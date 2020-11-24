@@ -32,11 +32,12 @@ class Match(BaseModel):
     match_format = db.relationship("MatchFormat")
     participants = db.relationship("MatchParticipant", back_populates="match", cascade="all, delete-orphan")
 
-    def __init__(self, course_id, tee_color_id, match_format_id, tee_time):
+    def __init__(self, course_id, tee_color_id, match_format_id, tee_time, tournament_id=None):
         self.course_id = course_id
         self.tee_color_id = tee_color_id
         self.match_format_id = match_format_id
         self.tee_time = tee_time
+        self.tournament_id = tournament_id
 
     def get_team_members(self, team_name):
         return list(filter(lambda participant: participant.team.name == team_name, self.participants))
