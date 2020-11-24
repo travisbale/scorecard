@@ -17,7 +17,7 @@ services:
     image: python:3.8-slim
     restart: always
     container_name: scorecard-test
-    entrypoint: [./entrypoint.sh, development]
+    entrypoint: [./entrypoint.sh, test]
     env_file: ./env/test.env
     working_dir: /app
     volumes:
