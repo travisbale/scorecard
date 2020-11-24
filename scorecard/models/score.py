@@ -39,9 +39,13 @@ class Score(BaseModel):
     participant = db.relationship("MatchParticipant", back_populates="scores")
     hole = db.relationship("Hole")
 
-    def __init__(self, player_id, strokes):
+    def __init__(self, player_id, strokes, match_id=None, course_id=None, tee_color_id=None, hole_number=None):
         self.player_id = player_id
         self.strokes = strokes
+        self.match_id = match_id
+        self.course_id = course_id
+        self.tee_color_id = tee_color_id
+        self.hole_number = hole_number
 
 
 class ScoreSchema(BaseSchema):

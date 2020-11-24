@@ -7,10 +7,12 @@ from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 
 from scorecard.models.course import Course
+from scorecard.models.hole import Hole
 from scorecard.models.match import Match
 from scorecard.models.match_format import MatchFormat
 from scorecard.models.match_participant import MatchParticipant, MatchParticipantSchema
 from scorecard.models.player import Player
+from scorecard.models.score import Score
 from scorecard.models.team import Team
 from scorecard.models.team_member import TeamMember
 from scorecard.models.tee_color import TeeColor
@@ -23,12 +25,14 @@ class TestMatchParticipant:
     match = None
     player = None
     team_member = None
+    course = None
+    tee_color = None
 
     @pytest.fixture
     def create_models(self, rollback_db):
-        course = Course("course name").save()
-        tee_color = TeeColor("white").save()
-        TeeSet(tee_color.id, 113, 72, course.id).save()
+        self.tee_color = TeeColor("white").save()
+        self.course = Course("course name").save()
+        TeeSet(self.tee_color.id, 113, 72, self.course.id).save()
 
         team = Team("team name").save()
         self.player = Player("test@test.com", "John", "Smith", 10).save()
@@ -36,9 +40,8 @@ class TestMatchParticipant:
         self.team_member = TeamMember(self.tournament.id, team.id, self.player.id, False).save()
 
         match_format = MatchFormat("name", "description").save()
-        self.match = Match(course.id, tee_color.id, match_format.id, datetime.now(), self.tournament.id).save()
-
-        yield
+        self.match = Match(self.course.id, self.tee_color.id, match_format.id, datetime.now(), self.tournament.id)
+        self.match.save()
 
     @pytest.fixture
     def participant(self, create_models):
@@ -50,6 +53,12 @@ class TestMatchParticipant:
 
         with pytest.raises(IntegrityError):
             participant.save()
+
+    @pytest.fixture
+    def delete_participant(self, participant):
+        participant.save()
+        yield
+        assert MatchParticipant.query.get((self.match.id, self.player.id)) is None
 
     def test_create_new_match_participant(self):
         participant = MatchParticipant(1, 2, 3)
@@ -74,6 +83,23 @@ class TestMatchParticipant:
 
     def test_save_without_tournament_id_raises_integrity_error(self, invalid_participant):
         invalid_participant.tournament_id = None
+
+    def test_delete_tournament_deletes_the_match_participant(self, delete_participant):
+        self.tournament.delete()
+
+    def test_delete_match_deletes_the_match_participant(self, delete_participant):
+        self.match.delete()
+
+    def test_delete_deletes_all_match_scores(self, participant):
+        participant.save()
+        hole = Hole(1, 5, 1, 513, self.course.id, self.tee_color.id).save()
+        Score(self.player.id, 3, self.match.id, self.course.id, self.tee_color.id, hole.number).save()
+        participant.delete()
+        assert Score.query.get((self.match.id, self.player.id, hole.number)) is None
+
+    def test_save_persists_match_participant_to_the_database(self, participant):
+        participant.save()
+        assert MatchParticipant.query.get((self.match.id, self.player.id)) is not None
 
     def test_dumping_schema_serializes_match_participant(self, participant):
         dictionary = MatchParticipantSchema().dump(participant.save())

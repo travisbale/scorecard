@@ -21,7 +21,6 @@ class TestHole:
         self.tee_color = TeeColor("white").save()
         self.course = Course("golf course").save()
         self.tee_set = TeeSet(self.tee_color.id, 113, 72, self.course.id).save()
-        yield
 
     @pytest.fixture
     def hole(self, create_models):
