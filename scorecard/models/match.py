@@ -13,9 +13,8 @@ class Match(BaseModel):
 
     __tablename__ = "matches"
     __table_args__ = (
-        db.ForeignKeyConstraint(
-            ["course_id", "tee_color_id"], ["tee_sets.course_id", "tee_sets.tee_color_id"], ondelete="CASCADE"
-        ),
+        db.ForeignKeyConstraint(["course_id", "tee_color_id"], ["tee_sets.course_id", "tee_sets.tee_color_id"]),
+        # These columns must be declared unique because they are used as a foreign key
         db.UniqueConstraint("id", "tournament_id"),
         db.UniqueConstraint("id", "course_id", "tee_color_id", name="uix_id_course_id_tee_color_id"),
     )
