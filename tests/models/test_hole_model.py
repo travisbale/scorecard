@@ -39,6 +39,11 @@ def invalid_hole(models, rollback_db):
         hole.save()
 
 
+@pytest.fixture
+def hole(models):
+    return Hole(1, 4, 3, 421, models["course"].id, models["tee_color"].id)
+
+
 @pytest.fixture(scope="module")
 def schema():
     return HoleSchema()
@@ -122,16 +127,16 @@ def test_save_hole_without_yards_raises_integrity_error(invalid_hole):
     invalid_hole.yards = None
 
 
-def test_save_valid_hole_persists_it_to_the_database(models, rollback_db):
-    Hole(1, 5, 2, 512, models["course"].id, models["tee_color"].id).save()
-    assert Hole.query.get((models["course"].id, models["tee_color"].id, 1)) is not None
+def test_save_valid_hole_persists_it_to_the_database(hole, rollback_db):
+    hole.save()
+    assert Hole.query.get((hole.course_id, hole.tee_color_id, 1)) is not None
 
 
-def test_delete_tee_set_also_deletes_the_hole(models, rollback_db):
-    Hole(1, 5, 2, 512, models["course"].id, models["tee_color"].id).save()
+def test_delete_tee_set_also_deletes_the_hole(models, hole, rollback_db):
+    hole.save()
     # Delete the tee set and verify the hole no longer exists
     models["tee_set"].delete()
-    assert Hole.query.get((models["course"].id, models["tee_color"].id, 1)) is None
+    assert Hole.query.get((hole.course_id, hole.tee_color_id, 1)) is None
 
 
 def test_hole_schema_load_hole_returns_hole_instance(schema):
@@ -153,3 +158,12 @@ def test_hole_schema_load_raises_validation_error_if_dictionary_has_no_hdcp_prop
 
 def test_hole_schema_load_raises_validation_error_if_dictionary_has_no_yards_property(invalid_hole_dict):
     invalid_hole_dict["yards"] = None
+
+
+def test_hole_schema_dump(hole, schema, rollback_db):
+    dict = schema.dump(hole.save())
+
+    assert dict["number"] is not None and dict["number"] == hole.number
+    assert dict["par"] is not None and dict["par"] == hole.par
+    assert dict["hdcp"] is not None and dict["hdcp"] == hole.hdcp
+    assert dict["yards"] is not None and dict["yards"] == hole.yards

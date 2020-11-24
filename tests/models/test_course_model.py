@@ -22,6 +22,14 @@ def test_course_schema_load_course_returns_course_instance(schema):
     assert isinstance(course, Course)
 
 
+def test_course_schema_dump(schema, rollback_db):
+    course = Course("name").save()
+    dict = schema.dump(course)
+
+    assert dict["id"] is not None and dict["id"] == course.id
+    assert dict["name"] is not None and dict["name"] == course.name
+
+
 def test_course_schema_load_course_raises_validation_error_if_dictionary_has_no_name_property(schema):
     with pytest.raises(ValidationError):
         schema.load(dict())
