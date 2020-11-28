@@ -22,7 +22,7 @@ class TeamMember(BaseModel):
     team = db.relationship("Team", back_populates="members")
     matches = db.relationship("MatchParticipant")
 
-    def __init__(self, tournament_id, team_id, player_id, is_captain):
+    def __init__(self, tournament_id, team_id, player_id, is_captain=False):
         self.tournament_id = tournament_id
         self.team_id = team_id
         self.player_id = player_id
