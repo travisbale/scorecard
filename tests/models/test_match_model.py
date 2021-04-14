@@ -111,30 +111,51 @@ class TestMatch:
         assert players[0].first_name == "Jim" or players[1].first_name == "Jim"
 
     def test_started_returns_false_until_everyone_has_recorded_a_score(self, match, create_participants):
-        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
-        Score(self.players["Jim"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
-        Score(self.players["Dwight"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
+        self.create_scores("Michael", match.id, [4])
+        self.create_scores("Jim", match.id, [4])
+        self.create_scores("Dwight", match.id, [4])
 
         assert not match.started()
 
     def test_started_returns_true_once_everyone_has_recorded_a_score(self, match, create_participants):
-        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
-        Score(self.players["Jim"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
-        Score(self.players["Dwight"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
-        Score(self.players["Andy"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
+        self.create_scores("Michael", match.id, [4])
+        self.create_scores("Jim", match.id, [4])
+        self.create_scores("Dwight", match.id, [4])
+        self.create_scores("Andy", match.id, [4])
 
         assert match.started()
 
     def test_score_returns_all_square_if_the_match_is_tied(self, match, create_participants):
-        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
-        Score(self.players["Jim"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
-        Score(self.players["Dwight"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
-        Score(self.players["Andy"].id, 4, match.id, self.course.id, self.tee_color.id, 1).save()
+        self.create_scores("Michael", match.id, [4, 4, 4, 4])
+        self.create_scores("Jim", match.id, [4, 4, 4, 4])
+        self.create_scores("Dwight", match.id, [4, 4, 4, 4])
+        self.create_scores("Andy", match.id, [4, 4, 4, 4])
         score = match.score
 
         assert score["leader"] == "Tied"
         assert score["status"] == "AS"
 
-    def _create_scores(self, player_id, match_id, course_id, tee_color_id, scores):
+    def test_score_returns_blue_lead_if_blue_is_in_the_lead(self, match, create_participants):
+        scores1 = [4, 3, 4, 4, 3, 4, 3, 4, 5, 4, 4, 3, 3, 4, 3, 4, 4, 4]
+        scores2 = [5, 4, 5, 4, 3, 4, 4, 4, 5, 5, 4, 3, 4, 4, 4, 5, 4, 4]
+        self.create_scores("Michael", match.id, scores1)
+        self.create_scores("Jim", match.id, scores2)
+        self.create_scores("Dwight", match.id, scores2)
+        self.create_scores("Andy", match.id, scores2)
+
+        Score(self.players["Michael"].id, 5, match.id, self.course.id, self.tee_color.id, 3).merge()
+        Score(self.players["Michael"].id, 5, match.id, self.course.id, self.tee_color.id, 16).merge()
+        Score(self.players["Michael"].id, 5, match.id, self.course.id, self.tee_color.id, 1).merge()
+        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 15).merge()
+        Score(self.players["Michael"].id, 5, match.id, self.course.id, self.tee_color.id, 10).merge()
+        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 13).merge()
+        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 2).merge()
+        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 7).merge()
+        score = match.score
+
+        assert score["leader"] == "Tied"
+        assert score["status"] == "AS"
+
+    def create_scores(self, name, match_id, scores):
         for hole_number, score in enumerate(scores):
-            Score(player_id, score, match_id, course_id, tee_color_id, hole_number).save()
+            Score(self.players[name].id, score, match_id, self.course.id, self.tee_color.id, hole_number + 1).merge()
