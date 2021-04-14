@@ -40,6 +40,12 @@ class BaseModel(db.Model):
         db.session.flush()
         return self
 
+    def update(self, obj):
+        """Update the object attributes with the values from obj."""
+        for key, value in obj.__dict__.items():
+            if not key.startswith("_") and value is not None:
+                setattr(self, key, value)
+
     def delete(self):
         """
         Mark the object for deletion.

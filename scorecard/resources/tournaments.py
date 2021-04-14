@@ -49,6 +49,14 @@ class TournamentResource(MethodView):
         tournament = Tournament.query.get_or_404(id, "The tournament does not exist")
         return jsonify(schema.dump(tournament)), HTTPStatus.OK
 
+    @permission_required("update:tournaments")
+    def put(self, id):
+        """Update an existing tournament."""
+        tournament = Tournament.query.get_or_404(id, "The tournament does not exist")
+        tournament.update(schema.load(request.get_json(), partial=True))
+
+        return jsonify(schema.dump(tournament)), HTTPStatus.OK
+
     @permission_required("delete:tournaments")
     def delete(self, id):
         """Delete the tournament with the given ID."""
