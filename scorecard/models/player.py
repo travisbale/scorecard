@@ -64,6 +64,14 @@ class PlayerSchema(BaseSchema):
     last_name = fields.String(required=True)
     full_name = fields.String(dump_only=True)
     hdcp = fields.Integer()
+    confidence = fields.Constant(0, dump_only=True)
+    wins = fields.Constant(0, dump_only=True)
+    losses = fields.Constant(0, dump_only=True)
+    ties = fields.Constant(0, dump_only=True)
+    cups = fields.Constant(0, dump_only=True)
+    bio = fields.Constant("Player biography", dump_only=True)
+    pictureUrl = fields.Constant("/img/fordyce.png", dump_only=True)
+    level = fields.Constant("white", dump_only=True)
 
     @post_load
     def load_player(self, data, **kwargs):
