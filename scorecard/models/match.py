@@ -47,16 +47,13 @@ class Match(BaseModel):
         score = 0
 
         if self.started():
-            red_team_members = self.get_team_members("Red")
-            blue_team_members = self.get_team_members("Blue")
-
             red_team_strokes = []
             blue_team_strokes = []
 
-            for member in red_team_members:
+            for member in self.get_team_members("Red"):
                 red_team_strokes.append(list(map(lambda s: s.strokes, member.scores)))
 
-            for member in blue_team_members:
+            for member in self.get_team_members("Blue"):
                 blue_team_strokes.append(list(map(lambda s: s.strokes, member.scores)))
 
             red_team_strokes = (
