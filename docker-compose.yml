@@ -2,24 +2,24 @@ version: '3.7'
 
 services:
   scorecard:
-    image: python:3.8-slim
+    build:
+      context: .
+      target: development
     restart: always
     container_name: scorecard
-    entrypoint: [./entrypoint.sh, development]
     env_file: ./env/dev.env
     ports:
       - '5001:5000'
-    working_dir: /app
+      - '5678:5678'
     volumes:
       - ./:/app
 
   scorecard-test:
-    image: python:3.8-slim
-    restart: always
+    build:
+      context: .
+      target: test
     container_name: scorecard-test
-    entrypoint: [./entrypoint.sh, test]
     env_file: ./env/test.env
-    working_dir: /app
     volumes:
       - ./:/app
 

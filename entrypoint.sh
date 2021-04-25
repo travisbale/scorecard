@@ -1,22 +1,12 @@
 #!/bin/bash
 
-if [ $1 = 'development' ] || [ $1 = 'test' ]
-then
-    # Install requirements
-    pip install --upgrade pip
-    pip install -r requirements/production.txt
-fi
+# Apply database schema migrations
+flask db upgrade
 
-if [ $1 != 'test' ]
+# Run the service
+if [ $1 = 'development' ]
 then
-    # Apply database schema migrations
-    flask db upgrade
-fi
-
-if [ $1 = 'development' ] || [ $1 = 'test' ]
-then
-    # Run the service
-    flask run -h 0.0.0.0
+    python -m debugpy --listen 0.0.0.0:5678 -m flask run -h 0.0.0.0
 else
     gunicorn -c gunicorn.py 'scorecard:create_app()'
 fi

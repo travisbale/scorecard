@@ -14,6 +14,7 @@ pipeline {
         sh 'mkdir -p keys'
         sh 'cp /home/keys/$KEY_DIR/heimdall.pub keys'
         sh 'docker build -t scorecard:$IMAGE_TAG .'
+        sh 'docker build -t scorecard-test:$IMAGE_TAG --target test .'
       }
     }
 
@@ -23,7 +24,7 @@ pipeline {
           docker run --rm \
             --env-file /home/env/scorecard/test.env \
             --network=ec2-user_default \
-            --entrypoint python scorecard:$IMAGE_TAG -m pytest
+            scorecard-test:$IMAGE_TAG
         '''
       }
     }
@@ -32,8 +33,10 @@ pipeline {
       steps {
         // Don't fail the build if the container does not exist
         sh 'docker stop $CONTAINER_NAME || true'
+        sh 'docker rm $CONTAINER_NAME || true'
         sh '''
-          docker run -d --rm \
+          docker run -d \
+            --restart always \
             --log-opt max-size=10m --log-opt max-file=3 \
             --name $CONTAINER_NAME \
             --env-file /home/env/scorecard/$ENV_FILE \
