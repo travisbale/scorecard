@@ -1,4 +1,4 @@
-# This file installs dependencies required for development
+# This file installs dependencies for your local environment required for development
 
 -r production.txt
 pip-tools
