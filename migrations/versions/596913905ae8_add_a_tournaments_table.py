@@ -24,7 +24,7 @@ def upgrade():
         sa.Column("name", sa.String(length=255), nullable=False),
         sa.Column("start_date", sa.Date(), nullable=False),
         sa.Column("end_date", sa.Date(), nullable=False),
-        sa.PrimaryKeyConstraint("id"),
+        sa.PrimaryKeyConstraint("id", name="pk__tournaments"),
     )
     # ### end Alembic commands ###
 

@@ -23,8 +23,8 @@ def upgrade():
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("name", sa.String(length=64), nullable=False),
         sa.Column("description", sa.Text(), nullable=False),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("name"),
+        sa.PrimaryKeyConstraint("id", name="pk__match_formats"),
+        sa.UniqueConstraint("name", name="uq__match_formats_name"),
     )
     # ### end Alembic commands ###
 

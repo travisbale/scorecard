@@ -24,10 +24,17 @@ def upgrade():
         sa.Column("player_id", sa.Integer(), nullable=False),
         sa.Column("team_id", sa.Integer(), nullable=True),
         sa.Column("is_captain", sa.Boolean(), nullable=False),
-        sa.ForeignKeyConstraint(["player_id"], ["players.id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["team_id"], ["teams.id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["tournament_id"], ["tournaments.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("tournament_id", "player_id"),
+        sa.ForeignKeyConstraint(
+            ["player_id"], ["players.id"], ondelete="CASCADE", name="fk__team_members__player_id__players"
+        ),
+        sa.ForeignKeyConstraint(["team_id"], ["teams.id"], ondelete="CASCADE", name="fk__team_members__team_id__teams"),
+        sa.ForeignKeyConstraint(
+            ["tournament_id"],
+            ["tournaments.id"],
+            ondelete="CASCADE",
+            name="fk__team_members__tournament_id__tournaments",
+        ),
+        sa.PrimaryKeyConstraint("tournament_id", "player_id", name="pk__team_members"),
     )
     # ### end Alembic commands ###
 

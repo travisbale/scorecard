@@ -26,35 +26,29 @@ def upgrade():
         sa.Column("tee_color_id", sa.Integer(), nullable=False),
         sa.Column("hole_number", sa.Integer(), nullable=False),
         sa.Column("strokes", sa.Integer(), nullable=False),
-        sa.CheckConstraint("strokes > 0"),
+        sa.CheckConstraint("strokes > 0", name="ck__scores__strokes"),
         sa.ForeignKeyConstraint(
             ["course_id", "tee_color_id", "hole_number"],
             ["holes.course_id", "holes.tee_color_id", "holes.number"],
+            name="fk__scores__holes",
         ),
-        sa.ForeignKeyConstraint(
-            ["course_id"],
-            ["courses.id"],
-        ),
+        sa.ForeignKeyConstraint(["course_id"], ["courses.id"], name="fk__scores__course_id__course"),
         sa.ForeignKeyConstraint(
             ["match_id", "course_id", "tee_color_id"],
             ["matches.id", "matches.course_id", "matches.tee_color_id"],
             ondelete="CASCADE",
+            name="fk__scores__matches",
         ),
         sa.ForeignKeyConstraint(
             ["match_id", "player_id"],
             ["match_participants.match_id", "match_participants.player_id"],
             ondelete="CASCADE",
+            name="fk__scores__match_participants",
         ),
-        sa.ForeignKeyConstraint(["match_id"], ["matches.id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(
-            ["player_id"],
-            ["players.id"],
-        ),
-        sa.ForeignKeyConstraint(
-            ["tee_color_id"],
-            ["tee_colors.id"],
-        ),
-        sa.PrimaryKeyConstraint("match_id", "player_id", "hole_number"),
+        sa.ForeignKeyConstraint(["match_id"], ["matches.id"], ondelete="CASCADE", name="fk__scores__match_id__matches"),
+        sa.ForeignKeyConstraint(["player_id"], ["players.id"], name="fk__scores__player_id__players"),
+        sa.ForeignKeyConstraint(["tee_color_id"], ["tee_colors.id"], name="fk__scores__tee_color_id__tee_colors"),
+        sa.PrimaryKeyConstraint("match_id", "player_id", "hole_number", name="pk__scores"),
     )
     # ### end Alembic commands ###
 

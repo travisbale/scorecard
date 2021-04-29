@@ -27,22 +27,19 @@ def upgrade():
         sa.Column("par", sa.Integer(), nullable=False),
         sa.Column("hdcp", sa.Integer(), nullable=False),
         sa.Column("yards", sa.Integer(), nullable=False),
-        sa.CheckConstraint("hdcp >= 1 AND hdcp <= 18"),
-        sa.CheckConstraint("number >= 1 AND number <= 18"),
-        sa.CheckConstraint("par >= 3 AND par <= 6"),
+        sa.CheckConstraint("hdcp >= 1 AND hdcp <= 18", name="ck__holes__hdcp"),
+        sa.CheckConstraint("number >= 1 AND number <= 18", name="ck__holes__number"),
+        sa.CheckConstraint("par >= 3 AND par <= 6", name="ck__holes__par"),
         sa.ForeignKeyConstraint(
-            ["course_id", "tee_color_id"], ["tee_sets.course_id", "tee_sets.tee_color_id"], ondelete="CASCADE"
+            ["course_id", "tee_color_id"],
+            ["tee_sets.course_id", "tee_sets.tee_color_id"],
+            ondelete="CASCADE",
+            name="fk__holes__tee_sets",
         ),
-        sa.ForeignKeyConstraint(
-            ["course_id"],
-            ["courses.id"],
-        ),
-        sa.ForeignKeyConstraint(
-            ["tee_color_id"],
-            ["tee_colors.id"],
-        ),
-        sa.PrimaryKeyConstraint("course_id", "tee_color_id", "number"),
-        sa.UniqueConstraint("course_id", "tee_color_id", "hdcp"),
+        sa.ForeignKeyConstraint(["course_id"], ["courses.id"], name="fk__holes__course_id__courses"),
+        sa.ForeignKeyConstraint(["tee_color_id"], ["tee_colors.id"], name="fk__holes__tee_color_id__tee_colors"),
+        sa.PrimaryKeyConstraint("course_id", "tee_color_id", "number", name="pk__holes"),
+        sa.UniqueConstraint("course_id", "tee_color_id", "hdcp", name="uq__holes__course_id__tee_color_id"),
     )
     # ### end Alembic commands ###
 

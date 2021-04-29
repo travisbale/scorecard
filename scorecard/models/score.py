@@ -26,7 +26,7 @@ class Score(BaseModel):
         db.ForeignKeyConstraint(
             ["course_id", "tee_color_id", "hole_number"], ["holes.course_id", "holes.tee_color_id", "holes.number"]
         ),
-        db.CheckConstraint("strokes > 0"),
+        db.CheckConstraint("strokes > 0", name="strokes"),
     )
 
     match_id = db.Column(db.Integer, db.ForeignKey("matches.id", ondelete="CASCADE"), primary_key=True)

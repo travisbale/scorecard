@@ -27,23 +27,21 @@ def upgrade():
         sa.Column("match_format_id", sa.Integer(), nullable=False),
         sa.Column("tee_time", sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
-            ["course_id", "tee_color_id"], ["tee_sets.course_id", "tee_sets.tee_color_id"], ondelete="CASCADE"
+            ["course_id", "tee_color_id"],
+            ["tee_sets.course_id", "tee_sets.tee_color_id"],
+            ondelete="CASCADE",
+            name="fk__matches__tee_sets",
         ),
+        sa.ForeignKeyConstraint(["course_id"], ["courses.id"], name="fk__matches__course_id__courses"),
         sa.ForeignKeyConstraint(
-            ["course_id"],
-            ["courses.id"],
+            ["match_format_id"], ["match_formats.id"], name="fk__matches__match_format_id__match_formats"
         ),
+        sa.ForeignKeyConstraint(["tee_color_id"], ["tee_colors.id"], name="fk__matches__tee_color_id__tee_colors"),
         sa.ForeignKeyConstraint(
-            ["match_format_id"],
-            ["match_formats.id"],
+            ["tournament_id"], ["tournaments.id"], ondelete="CASCADE", name="fk__matches__tournament_id__tournaments"
         ),
-        sa.ForeignKeyConstraint(
-            ["tee_color_id"],
-            ["tee_colors.id"],
-        ),
-        sa.ForeignKeyConstraint(["tournament_id"], ["tournaments.id"], ondelete="CASCADE"),
-        sa.UniqueConstraint("id", "tournament_id"),
-        sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("id", "tournament_id", name="uq__matches__tournament_id"),
+        sa.PrimaryKeyConstraint("id", name="pk__matches"),
     )
     # ### end Alembic commands ###
 

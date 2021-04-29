@@ -25,8 +25,8 @@ def upgrade():
         sa.Column("first_name", sa.String(length=32), nullable=False),
         sa.Column("last_name", sa.String(length=32), nullable=False),
         sa.Column("hdcp", sa.Integer(), nullable=False),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("email"),
+        sa.PrimaryKeyConstraint("id", name="pk__players"),
+        sa.UniqueConstraint("email", name="uq__players__email"),
     )
     # ### end Alembic commands ###
 

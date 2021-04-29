@@ -24,10 +24,14 @@ def upgrade():
         sa.Column("tee_color_id", sa.Integer(), nullable=False),
         sa.Column("slope", sa.Integer(), nullable=False),
         sa.Column("rating", sa.Numeric(precision=4, scale=1), nullable=False),
-        sa.CheckConstraint("slope >= 55 AND slope <= 155"),
-        sa.ForeignKeyConstraint(["course_id"], ["courses.id"], ondelete="CASCADE"),
-        sa.ForeignKeyConstraint(["tee_color_id"], ["tee_colors.id"], ondelete="CASCADE"),
-        sa.PrimaryKeyConstraint("course_id", "tee_color_id"),
+        sa.CheckConstraint("slope >= 55 AND slope <= 155", name="ck__tee_sets__slope"),
+        sa.ForeignKeyConstraint(
+            ["course_id"], ["courses.id"], ondelete="CASCADE", name="fk__tee_sets__course_id__courses"
+        ),
+        sa.ForeignKeyConstraint(
+            ["tee_color_id"], ["tee_colors.id"], ondelete="CASCADE", name="fk__tee_sets__tee_color_id__tee_colors"
+        ),
+        sa.PrimaryKeyConstraint("course_id", "tee_color_id", name="pk__tee_sets"),
     )
     # ### end Alembic commands ###
 

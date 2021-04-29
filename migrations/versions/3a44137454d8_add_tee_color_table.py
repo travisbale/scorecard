@@ -22,8 +22,8 @@ def upgrade():
         "tee_colors",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("color", sa.String(length=16), nullable=False),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("color"),
+        sa.PrimaryKeyConstraint("id", name="pk__tee_colors"),
+        sa.UniqueConstraint("color", name="uq__tee_colors__color"),
     )
     # ### end Alembic commands ###
 

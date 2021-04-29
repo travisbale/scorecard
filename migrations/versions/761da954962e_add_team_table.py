@@ -22,8 +22,8 @@ def upgrade():
         "teams",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("name", sa.String(length=32), nullable=False),
-        sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("name"),
+        sa.PrimaryKeyConstraint("id", name="pk__teams"),
+        sa.UniqueConstraint("name", name="uq__teams__name"),
     )
     # ### end Alembic commands ###
 

@@ -6,10 +6,22 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import MetaData
 
 from .flask import Flask
 
-db = SQLAlchemy()
+# Set the naming convention for the database constraints
+# https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/#using-custom-metadata-and-naming-conventions
+convention = {
+    "ix": "ix__%(column_0_label)s",
+    "uq": "uq__%(table_name)s__%(column_0_name)s",
+    "ck": "ck__%(table_name)s__%(constraint_name)s",
+    "fk": "fk__%(table_name)s__%(column_0_name)s__%(referred_table_name)s",
+    "pk": "pk__%(table_name)s",
+}
+
+metadata = MetaData(naming_convention=convention)
+db = SQLAlchemy(metadata=metadata)
 migrate = Migrate()
 jwt = JWTManager()
 

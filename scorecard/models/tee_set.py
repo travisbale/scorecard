@@ -16,7 +16,7 @@ class TeeSet(BaseModel):
     """Represents a set of teeing areas at a golf course."""
 
     __tablename__ = "tee_sets"
-    __table_args__ = (db.CheckConstraint(f"slope >= {MIN_SLOPE} AND slope <= {MAX_SLOPE}"),)
+    __table_args__ = (db.CheckConstraint(f"slope >= {MIN_SLOPE} AND slope <= {MAX_SLOPE}", name="slope"),)
 
     course_id = db.Column(db.Integer, db.ForeignKey("courses.id", ondelete="CASCADE"), primary_key=True)
     tee_color_id = db.Column(db.Integer, db.ForeignKey("tee_colors.id"), primary_key=True)

@@ -15,9 +15,9 @@ class Hole(BaseModel):
         db.ForeignKeyConstraint(
             ["course_id", "tee_color_id"], ["tee_sets.course_id", "tee_sets.tee_color_id"], ondelete="CASCADE"
         ),
-        db.CheckConstraint("number >= 1 AND number <= 18"),
-        db.CheckConstraint("hdcp >= 1 AND hdcp <= 18"),
-        db.CheckConstraint("par >= 3 AND par <= 6"),
+        db.CheckConstraint("number >= 1 AND number <= 18", name="number"),
+        db.CheckConstraint("hdcp >= 1 AND hdcp <= 18", name="hdcp"),
+        db.CheckConstraint("par >= 3 AND par <= 6", name="par"),
         db.UniqueConstraint("course_id", "tee_color_id", "hdcp"),
     )
 
