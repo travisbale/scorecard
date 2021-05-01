@@ -19,8 +19,8 @@ class Score(BaseModel):
             ondelete="CASCADE",
         ),
         db.ForeignKeyConstraint(
-            ["match_id", "course_id", "tee_color_id"],
-            ["matches.id", "matches.course_id", "matches.tee_color_id"],
+            ["course_id", "tee_color_id", "match_id"],
+            ["matches.course_id", "matches.tee_color_id", "matches.id"],
             ondelete="CASCADE",
         ),
         db.ForeignKeyConstraint(

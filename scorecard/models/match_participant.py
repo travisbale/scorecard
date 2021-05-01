@@ -16,7 +16,7 @@ class MatchParticipant(BaseModel):
             ["tournament_id", "match_id"], ["matches.tournament_id", "matches.id"], ondelete="CASCADE"
         ),
         db.ForeignKeyConstraint(
-            ["tournament_id", "player_id"], ["team_members.tournament_id", "team_members.player_id"]
+            ["tournament_id", "player_id"], ["team_members.tournament_id", "team_members.player_id"], ondelete="CASCADE"
         ),
     )
 
