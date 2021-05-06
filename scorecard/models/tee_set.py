@@ -54,6 +54,7 @@ class TeeSetSchema(BaseSchema):
     slope = fields.Integer(required=True, validate=validate.Range(min=MIN_SLOPE, max=MAX_SLOPE))
     rating = fields.Decimal(required=True)
     course = fields.Pluck("CourseSchema", "name")
+    course_id = fields.Integer(dump_only=True)
     yards = fields.Integer(dump_only=True)
     par = fields.Integer(dump_only=True)
     tee_color = fields.Pluck("TeeColorSchema", "color")
