@@ -1,7 +1,6 @@
 """Match participation module."""
 
 from marshmallow import fields
-
 from scorecard import db
 
 from .base import BaseModel, BaseSchema
@@ -41,9 +40,13 @@ class MatchParticipant(BaseModel):
         return self.player.get_team(self.tournament_id)
 
     @property
-    def strokes(self):
-        """Return the player's score."""
-        return sum(map(lambda s: s.strokes, self.scores))
+    def hdcp_strokes(self):
+        hdcp_strokes = []
+
+        for hole in self.match.tee_set.holes:
+            hdcp_strokes.append(self.player.get_hdcp_strokes(hole.hdcp))
+
+        return hdcp_strokes
 
 
 class MatchParticipantSchema(BaseSchema):
@@ -55,3 +58,4 @@ class MatchParticipantSchema(BaseSchema):
     email = fields.Email(attribute="player.email", dump_only=True)
     last_name = fields.String(attribute="player.last_name", dump_only=True)
     full_name = fields.String(attribute="player.full_name", dump_only=True)
+    hdcp_strokes = fields.List(fields.Integer, dump_only=True)

@@ -2,7 +2,6 @@
 
 from marshmallow import fields
 from marshmallow.decorators import post_load
-
 from scorecard import db
 
 from .base import BaseModel, BaseSchema
@@ -50,6 +49,9 @@ class Player(BaseModel):
                 return membership.team
 
         raise ValueError(f"Player did not play in tournament with ID {tournament_id}")
+
+    def get_hdcp_strokes(self, hole_hdcp):
+        return self.hdcp // 18 + (1 if self.hdcp % 18 >= hole_hdcp else 0)
 
     def __repr__(self):
         return f"<Player {self.first_name} {self.last_name}>"

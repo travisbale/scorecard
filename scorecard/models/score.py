@@ -2,7 +2,6 @@
 
 from marshmallow import fields
 from marshmallow.decorators import post_load
-
 from scorecard import db
 
 from .base import BaseModel, BaseSchema
@@ -47,15 +46,19 @@ class Score(BaseModel):
         self.tee_color_id = tee_color_id
         self.hole_number = hole_number
 
+    @property
+    def net_strokes(self):
+        return self.strokes - (self.participant.player.get_hdcp_strokes(self.hole.hdcp))
+
 
 class ScoreSchema(BaseSchema):
     """Serializes and deserializes a player's scores in a match."""
 
     player_id = fields.Integer(required=True)
     strokes = fields.Integer(required=True)
+    net_strokes = fields.Integer(dump_only=True)
     hole_number = fields.Integer(dump_only=True)
     player_name = fields.String(attribute="participant.player.full_name", dump_only=True)
-    total = fields.Integer(attribute="participant.strokes", dump_only=True)
 
     @post_load
     def load_match_score(self, data, **kwargs):

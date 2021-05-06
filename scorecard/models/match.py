@@ -25,6 +25,7 @@ class Match(BaseModel):
     tee_color_id = db.Column(db.Integer, db.ForeignKey("tee_colors.id"), nullable=False)
     match_format_id = db.Column(db.Integer, db.ForeignKey("match_formats.id"), nullable=False)
     tee_time = db.Column(db.DateTime)
+    handicapped = db.Column(db.Boolean, default=False, nullable=False)
 
     tournament = db.relationship("Tournament", back_populates="matches")
     tee_set = db.relationship("TeeSet")
@@ -51,10 +52,16 @@ class Match(BaseModel):
             blue_team_strokes = []
 
             for member in self.get_team_members("Red"):
-                red_team_strokes.append(list(map(lambda s: s.strokes, member.scores)))
+                if self.handicapped:
+                    red_team_strokes.append(list(map(lambda s: s.net_strokes, member.scores)))
+                else:
+                    red_team_strokes.append(list(map(lambda s: s.strokes, member.scores)))
 
             for member in self.get_team_members("Blue"):
-                blue_team_strokes.append(list(map(lambda s: s.strokes, member.scores)))
+                if self.handicapped:
+                    blue_team_strokes.append(list(map(lambda s: s.net_strokes, member.scores)))
+                else:
+                    blue_team_strokes.append(list(map(lambda s: s.strokes, member.scores)))
 
             red_team_strokes = (
                 np.minimum(red_team_strokes[0], red_team_strokes[1])
