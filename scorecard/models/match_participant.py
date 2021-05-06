@@ -40,6 +40,11 @@ class MatchParticipant(BaseModel):
         """Return the team the player played for during the match."""
         return self.player.get_team(self.tournament_id)
 
+    @property
+    def strokes(self):
+        """Return the player's score."""
+        return sum(map(lambda s: s.strokes, self.scores))
+
 
 class MatchParticipantSchema(BaseSchema):
     """Serializes and deserializes match participants."""

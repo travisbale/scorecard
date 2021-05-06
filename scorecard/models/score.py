@@ -55,6 +55,7 @@ class ScoreSchema(BaseSchema):
     strokes = fields.Integer(required=True)
     hole_number = fields.Integer(dump_only=True)
     player_name = fields.String(attribute="participant.player.full_name", dump_only=True)
+    total = fields.Integer(attribute="participant.strokes", dump_only=True)
 
     @post_load
     def load_match_score(self, data, **kwargs):
