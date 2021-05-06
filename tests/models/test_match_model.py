@@ -130,10 +130,10 @@ class TestMatch:
         self.create_scores("Jim", match.id, [4, 4, 4, 4])
         self.create_scores("Dwight", match.id, [4, 4, 4, 4])
         self.create_scores("Andy", match.id, [4, 4, 4, 4])
-        score = match.score
+        scores = match.scores
 
-        assert score["leader"] == "Tied"
-        assert score["status"] == "AS"
+        assert scores[-1]["matchStatus"] == 0
+        assert scores[-1]["statusText"] == "AS"
 
     def test_score_returns_blue_lead_if_blue_is_in_the_lead(self, match, create_participants):
         scores1 = [4, 3, 4, 4, 3, 4, 3, 4, 5, 4, 4, 3, 3, 4, 3, 4, 4, 4]
@@ -143,18 +143,10 @@ class TestMatch:
         self.create_scores("Dwight", match.id, scores2)
         self.create_scores("Andy", match.id, scores2)
 
-        Score(self.players["Michael"].id, 5, match.id, self.course.id, self.tee_color.id, 3).merge()
-        Score(self.players["Michael"].id, 5, match.id, self.course.id, self.tee_color.id, 16).merge()
-        Score(self.players["Michael"].id, 5, match.id, self.course.id, self.tee_color.id, 1).merge()
-        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 15).merge()
-        Score(self.players["Michael"].id, 5, match.id, self.course.id, self.tee_color.id, 10).merge()
-        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 13).merge()
-        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 2).merge()
-        Score(self.players["Michael"].id, 4, match.id, self.course.id, self.tee_color.id, 7).merge()
-        score = match.score
+        scores = match.scores
 
-        assert score["leader"] == "Tied"
-        assert score["status"] == "AS"
+        assert scores[-1]["matchStatus"] == 8
+        assert scores[-1]["statusText"] == "6 & 5"
 
     def create_scores(self, name, match_id, scores):
         for hole_number, score in enumerate(scores):

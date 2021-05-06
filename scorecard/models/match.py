@@ -42,9 +42,9 @@ class Match(BaseModel):
         return list(filter(lambda participant: participant.team.name == team_name, self.participants))
 
     @property
-    def score(self):
+    def scores(self):
         """Return the current score in the match."""
-        score = 0
+        scores = [{"matchStatus": 0, "statusText": ""}]
 
         if self.started():
             red_team_strokes = []
@@ -68,19 +68,42 @@ class Match(BaseModel):
             )
 
             for blue_score, red_score in zip(blue_team_strokes, red_team_strokes):
-                if blue_score > red_score:
-                    score += 1
-                elif red_score > blue_score:
-                    score -= 1
+                status_change = 1 if blue_score > red_score else -1 if red_score > blue_score else 0
+                matchStatus = scores[-1]["matchStatus"] + status_change
 
-        return {
-            "leader": "Red" if score > 0 else "Blue" if score < 0 else "Tied",
-            "status": "AS" if score == 0 else f"{abs(score)} UP",
-        }
+                if scores[-1]["statusText"].find("&") != -1:
+                    status_text = scores[-1]["statusText"]
+                elif matchStatus == 0:
+                    if len(scores) < 18:
+                        status_text = 'AS'
+                    else:
+                        status_text = 'HALVED'
+                else:
+                    if abs(matchStatus) > 18 - len(scores) and len(scores) != 18:
+                        status_text = f"{abs(matchStatus)} & {18 - len(scores)}"
+                    else:
+                        status_text = f"{abs(matchStatus)} UP"
+
+                scores.append({
+                    "redTeamScore": red_score,
+                    "blueTeamScore": blue_score,
+                    "matchStatus": matchStatus,
+                    "statusText": status_text
+                })
+
+        return scores[1:]
 
     @property
     def winner(self):
-        return self.score["leader"] if self.finished else ""
+        if self.finished:
+            if self.scores[-1]["matchStatus"] > 0:
+                return "Red"
+            elif self.scores[-1]["matchStatus"] < 0:
+                return "Blue"
+            else:
+                return "Tied"
+        else:
+            return ""
 
     @property
     def players(self):
@@ -96,6 +119,8 @@ class Match(BaseModel):
 
     @property
     def finished(self):
+        if len(self.scores) > 0 and self.scores[-1]["statusText"].find("&") > 0:
+            return True
         for participant in self.participants:
             if len(participant.scores) < 18:
                 return False
@@ -106,6 +131,12 @@ class Match(BaseModel):
 class MatchSchema(BaseSchema):
     """Serializes and deserializes matches of golf."""
 
+    class HoleStatusSchema(BaseSchema):
+        redTeamScore = fields.Integer()
+        blueTeamScore = fields.Integer()
+        matchStatus = fields.Integer()
+        statusText = fields.String()
+
     id = fields.Integer(dump_only=True)
     course_id = fields.Integer(required=True)
     tee_color_id = fields.Integer(required=True)
@@ -113,7 +144,7 @@ class MatchSchema(BaseSchema):
     match_format = fields.Pluck("MatchFormatSchema", "name", data_key="format", dump_only=True)
     tee_time = fields.DateTime(required=True)
     participants = fields.Nested("MatchParticipantSchema", many=True)
-    score = fields.Dict(dump_only=True)
+    scores = fields.Nested("HoleStatusSchema", many=True, dump_only=True)
     finished = fields.Boolean(dump_only=True)
     tournament_id = fields.Integer(dump_only=True)
 
