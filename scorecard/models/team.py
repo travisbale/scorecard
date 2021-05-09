@@ -1,10 +1,8 @@
 """Team module."""
 
-from marshmallow import fields, post_load
-
 from scorecard import db
 
-from .base import BaseModel, BaseSchema
+from .base import BaseModel
 
 
 class Team(BaseModel):
@@ -26,41 +24,27 @@ class Team(BaseModel):
     def __init__(self, name):
         self.name = name
 
-    @property
-    def captain(self):
+    def get_team_members(self, tournament):
+        return list(filter(lambda member: member.tournament_id == tournament.id, self.members))
+
+    def get_captain(self, tournament_id):
         """Return the captain of the team."""
-        captains = list(filter(lambda member: member.is_captain, self.members))
+        captains = list(filter(lambda member: member.is_captain, self.get_team_members(tournament_id)))
         return captains[0].player if len(captains) > 0 else None
 
-    @property
-    def points(self):
+    def get_points(self, tournament):
         """Return the teams total points."""
         points = 0
 
-        if len(self.members) > 0:
-            for match in self.members[0].tournament.matches:
-                winner = match.winner
+        for match in tournament.matches:
+            winner = match.winner
 
-                if winner == self.name:
-                    points += 1
-                elif winner == "Tied":
-                    points += points + 0.5
+            if winner == self.name:
+                points += 1
+            elif winner == "Tied":
+                points += 0.5
 
         return points
 
     def __repr__(self):
         return f"<Team {self.name}>"
-
-
-class TeamSchema(BaseSchema):
-    """Serializes and deserializes team objects."""
-
-    id = fields.Integer()
-    name = fields.String(required=True)
-    captain = fields.Nested("PlayerSchema", dump_only=True)
-    points = fields.Float(dump_only=True)
-
-    @post_load
-    def load_team(self, data, **kwargs):
-        """Create a team object using the deserialized values."""
-        return Team(**data)

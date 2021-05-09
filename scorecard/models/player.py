@@ -37,11 +37,6 @@ class Player(BaseModel):
         """Return the matches the player has played in."""
         return [participation.match for participation in self.match_participations]
 
-    @property
-    def tournaments(self):
-        """Return the tournaments the player has played in."""
-        return [membership.tournament for membership in self.memberships]
-
     def get_team(self, tournament_id):
         """Return the team the player played on during the tournament."""
         for membership in self.memberships:

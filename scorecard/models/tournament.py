@@ -2,8 +2,8 @@
 
 from marshmallow import fields
 from marshmallow.decorators import post_load
-
 from scorecard import db
+from scorecard.models import Team
 
 from .base import BaseModel, BaseSchema
 
@@ -27,6 +27,22 @@ class Tournament(BaseModel):
         self.start_date = start_date
         self.end_date = end_date
 
+    @property
+    def teams(self):
+        teams = Team.query.all()
+        result = []
+
+        for team in teams:
+            result.append(
+                {
+                    "name": team.name,
+                    "captain": team.get_captain(self),
+                    "points": team.get_points(self),
+                }
+            )
+
+        return result
+
     def __repr__(self):
         return f"<Tournament {self.start_date.year} {self.name}>"
 
@@ -34,10 +50,16 @@ class Tournament(BaseModel):
 class TournamentSchema(BaseSchema):
     """Serializes and deserializes tournaments."""
 
+    class TeamSchema(BaseSchema):
+        name = fields.String(required=True)
+        captain = fields.Nested("PlayerSchema", dump_only=True)
+        points = fields.Float(dump_only=True)
+
     id = fields.Integer(dump_only=True)
     name = fields.String(required=True)
     start_date = fields.Date(required=True)
     end_date = fields.Date(required=True)
+    teams = fields.Nested("TeamSchema", many=True, dump_only=True)
 
     @post_load
     def load_tournament(self, data, **kwargs):
