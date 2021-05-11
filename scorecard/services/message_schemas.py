@@ -8,4 +8,5 @@ class InvitationEmailSchema(Schema):
 
     first_name = fields.String()
     last_name = fields.String()
+    email = fields.Email()
     url = fields.String()
