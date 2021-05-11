@@ -1,7 +1,6 @@
 """Models package."""
 
 from flask import Blueprint
-
 from scorecard import db
 
 from .course import Course

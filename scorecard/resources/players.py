@@ -8,9 +8,8 @@ from http import HTTPStatus
 
 from flask import jsonify, request
 from flask.views import MethodView
-from werkzeug.exceptions import Conflict
-
 from scorecard.models.player import Player, PlayerSchema
+from werkzeug.exceptions import Conflict
 
 from .view_decorators import permission_required
 

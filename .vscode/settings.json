@@ -7,7 +7,6 @@
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "python.pythonPath": ".venv/bin/python",
-    "python.sortImports.path": "isort",
     "python.sortImports.args": [
         "-l 120",
         "--thirdparty",

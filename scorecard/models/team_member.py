@@ -1,7 +1,6 @@
 """Team member module."""
 
 from marshmallow import fields
-
 from scorecard import db
 
 from .base import BaseModel, BaseSchema
