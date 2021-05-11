@@ -9,12 +9,15 @@ from http import HTTPStatus
 from flask import jsonify, request
 from flask.views import MethodView
 from scorecard.models.player import Player, PlayerSchema
+from scorecard.services.message_service import MessageService
 from werkzeug.exceptions import Conflict
 
 from .view_decorators import permission_required
 
 # Schema used to serialize and deserialize user input into player objects
 schema = PlayerSchema()
+
+message_service = MessageService()
 
 
 class PlayersResource(MethodView):
@@ -33,6 +36,10 @@ class PlayersResource(MethodView):
             raise Conflict(description="A player with this email address already exists")
 
         player.save()
+
+        # Send an email, inviting the player to create an account
+        message_service.send_invitation(player)
+
         return jsonify(schema.dump(player)), HTTPStatus.CREATED
 
 

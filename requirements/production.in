@@ -6,8 +6,10 @@ flask-cors
 flask-jwt-extended
 flask-migrate
 flask-sqlalchemy
+itsdangerous
 gunicorn
 marshmallow
 numpy
+pika
 psycopg2-binary
 simplejson

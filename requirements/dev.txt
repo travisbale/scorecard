@@ -78,6 +78,8 @@ pathspec==0.8.1
     # via black
 pep517==0.10.0
     # via pip-tools
+pika==1.2.0
+    # via -r requirements/production.txt
 pip-tools==6.1.0
     # via -r requirements/dev.in
 psycopg2-binary==2.8.6
