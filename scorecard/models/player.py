@@ -1,5 +1,7 @@
 """Player module."""
 
+from enum import Enum
+
 from marshmallow import fields
 from marshmallow.decorators import post_load
 from scorecard import db
@@ -19,15 +21,17 @@ class Player(BaseModel):
     hdcp = db.Column(db.Integer, default=0, nullable=False)
     photo_path = db.Column(db.String, default="", nullable=False)
     biography = db.Column(db.Text, default="", nullable=False)
+    tier = db.Column(db.String(32), default="white", nullable=False)
 
     memberships = db.relationship("TeamMember", back_populates="player", cascade="all, delete-orphan")
     match_participations = db.relationship("MatchParticipant", back_populates="player")
 
-    def __init__(self, email, first_name, last_name, biography, hdcp=0):
+    def __init__(self, email, first_name, last_name, biography, tier="white", hdcp=0):
         self.email = email
         self.first_name = first_name
         self.last_name = last_name
         self.biography = biography
+        self.tier = tier
         self.hdcp = hdcp
 
     @property
@@ -66,13 +70,13 @@ class PlayerSchema(BaseSchema):
     photo_path = fields.String(dump_only=True)
     hdcp = fields.Integer()
     biography = fields.String()
+    tier = fields.String()
 
     confidence = fields.Constant(0, dump_only=True)
     wins = fields.Constant(0, dump_only=True)
     losses = fields.Constant(0, dump_only=True)
     ties = fields.Constant(0, dump_only=True)
     cups = fields.Constant(0, dump_only=True)
-    level = fields.Constant("white", dump_only=True)
 
     @post_load
     def load_player(self, data, **kwargs):
