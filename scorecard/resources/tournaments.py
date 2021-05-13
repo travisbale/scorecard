@@ -8,7 +8,6 @@ from http import HTTPStatus
 
 from flask import jsonify, request
 from flask.views import MethodView
-
 from scorecard.models.player import Player
 from scorecard.models.tournament import Tournament, TournamentSchema
 
@@ -22,7 +21,7 @@ class TournamentsResource(MethodView):
 
     def get(self):
         """Return a list of the tournaments."""
-        return jsonify(schema.dump(Tournament.query.all(), many=True)), HTTPStatus.OK
+        return jsonify(schema.dump(Tournament.query.order_by(Tournament.start_date).all(), many=True)), HTTPStatus.OK
 
     @permission_required("create:tournaments")
     def post(self):
