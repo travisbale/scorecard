@@ -3,8 +3,6 @@
 from datetime import datetime
 
 import pytest
-from sqlalchemy.exc import IntegrityError
-
 from scorecard.models.match import Match
 from scorecard.models.match_format import MatchFormat
 from scorecard.models.match_participant import MatchParticipant
@@ -15,6 +13,7 @@ from scorecard.models.team_member import TeamMember
 from scorecard.models.tee_color import TeeColor
 from scorecard.models.tee_set import TeeSet
 from scorecard.models.tournament import Tournament
+from sqlalchemy.exc import IntegrityError
 
 
 class TestMatch:
@@ -26,7 +25,7 @@ class TestMatch:
 
     @pytest.fixture
     def create_models(self, pebble_beach, rollback_db):
-        self.tournament = Tournament("tournament name", datetime.now(), datetime.now()).save()
+        self.tournament = Tournament("tournament name", datetime.now(), datetime.now(), "here").save()
         self.course = pebble_beach
         self.tee_color = TeeColor.query.filter_by(color="White").first()
         self.match_format = MatchFormat("format name", "format description").save()

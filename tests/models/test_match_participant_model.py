@@ -4,8 +4,6 @@ from datetime import datetime
 
 import pytest
 from marshmallow import ValidationError
-from sqlalchemy.exc import IntegrityError
-
 from scorecard.models.course import Course
 from scorecard.models.hole import Hole
 from scorecard.models.match import Match
@@ -18,6 +16,7 @@ from scorecard.models.team_member import TeamMember
 from scorecard.models.tee_color import TeeColor
 from scorecard.models.tee_set import TeeSet
 from scorecard.models.tournament import Tournament
+from sqlalchemy.exc import IntegrityError
 
 
 class TestMatchParticipant:
@@ -36,7 +35,7 @@ class TestMatchParticipant:
 
         team = Team("team name").save()
         self.player = Player("test@test.com", "John", "Smith", 10).save()
-        self.tournament = Tournament("name", datetime.now(), datetime.now()).save()
+        self.tournament = Tournament("name", datetime.now(), datetime.now(), "here").save()
         self.team_member = TeamMember(self.tournament.id, team.id, self.player.id, False).save()
 
         match_format = MatchFormat("name", "description").save()

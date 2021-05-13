@@ -18,16 +18,18 @@ class Tournament(BaseModel):
     name = db.Column(db.String(255), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
+    location = db.Column(db.String(255), nullable=False)
 
     participants = db.relationship("TeamMember", back_populates="tournament", cascade="all, delete-orphan")
     matches = db.relationship(
         "Match", back_populates="tournament", cascade="all, delete-orphan", order_by="Match.tee_time"
     )
 
-    def __init__(self, name, start_date, end_date):
+    def __init__(self, name, start_date, end_date, location):
         self.name = name
         self.start_date = start_date
         self.end_date = end_date
+        self.location = location
 
     @property
     def teams(self):
@@ -61,6 +63,7 @@ class TournamentSchema(BaseSchema):
     name = fields.String(required=True)
     start_date = fields.Date(required=True)
     end_date = fields.Date(required=True)
+    location = fields.String(required=True)
     teams = fields.Nested("TeamSchema", many=True, dump_only=True)
 
     @post_load
