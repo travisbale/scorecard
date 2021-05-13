@@ -20,7 +20,9 @@ class Tournament(BaseModel):
     end_date = db.Column(db.Date, nullable=False)
 
     participants = db.relationship("TeamMember", back_populates="tournament", cascade="all, delete-orphan")
-    matches = db.relationship("Match", back_populates="tournament", cascade="all, delete-orphan")
+    matches = db.relationship(
+        "Match", back_populates="tournament", cascade="all, delete-orphan", order_by="Match.tee_time"
+    )
 
     def __init__(self, name, start_date, end_date):
         self.name = name
