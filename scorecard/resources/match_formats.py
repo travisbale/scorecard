@@ -4,9 +4,9 @@ from http import HTTPStatus
 
 from flask import jsonify, request
 from flask.views import MethodView
-from werkzeug.exceptions import Conflict
-
 from scorecard.models.match_format import MatchFormat, MatchFormatSchema
+from scorecard.resources.view_decorators import permission_required
+from werkzeug.exceptions import Conflict
 
 # Schema for match format serialization and deserialization
 schema = MatchFormatSchema()
@@ -19,6 +19,7 @@ class MatchFormatsResource(MethodView):
         """Return a list of all the match formats."""
         return jsonify(schema.dump(MatchFormat.query.all(), many=True)), HTTPStatus.OK
 
+    @permission_required("create:match_formats")
     def post(self):
         """Create a new match format."""
         match_format = schema.load(request.get_json())
@@ -38,6 +39,7 @@ class MatchFormatResource(MethodView):
         match_format = MatchFormat.query.get_or_404(id, "The match format does not exist")
         return jsonify(schema.dump(match_format)), HTTPStatus.OK
 
+    @permission_required("delete:match_formats")
     def delete(self, id):
         """Delete the match format with the given ID."""
         match_format = MatchFormat.query.get_or_404(id, "The match format does not exist")

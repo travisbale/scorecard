@@ -4,11 +4,11 @@ from http import HTTPStatus
 
 from flask import jsonify, request
 from flask.views import MethodView
-from werkzeug.exceptions import BadRequest, NotFound
-
 from scorecard.models.match import Match
 from scorecard.models.match_participant import MatchParticipant, MatchParticipantSchema
 from scorecard.models.player import Player, PlayerSchema
+from scorecard.resources.view_decorators import permission_required
+from werkzeug.exceptions import BadRequest, NotFound
 
 player_schema = PlayerSchema()
 participant_schema = MatchParticipantSchema()
@@ -22,6 +22,7 @@ class MatchParticipantsResource(MethodView):
         match = self._check_route_parameters(tournament_id, match_id)
         return jsonify(player_schema.dump(match.players, many=True)), HTTPStatus.OK
 
+    @permission_required("update:matches")
     def post(self, tournament_id, match_id):
         """Add the players to the match."""
         players = self._get_players(tournament_id, match_id)
@@ -32,6 +33,7 @@ class MatchParticipantsResource(MethodView):
 
         return jsonify(message="The players were assigned to the match"), HTTPStatus.CREATED
 
+    @permission_required("delete:matches")
     def delete(self, tournament_id, match_id):
         """Delete the players from the match."""
         players = self._get_players(tournament_id, match_id)

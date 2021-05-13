@@ -4,9 +4,9 @@ from http import HTTPStatus
 
 from flask import jsonify, request
 from flask.views import MethodView
-
 from scorecard.models.course import Course
 from scorecard.models.tee_set import TeeSet, TeeSetSchema
+from scorecard.resources.view_decorators import permission_required
 
 schema = TeeSetSchema()
 
@@ -19,6 +19,7 @@ class TeeSetsResource(MethodView):
         course = Course.query.get_or_404(course_id, "The course does not exist")
         return jsonify(schema.dump(course.tee_sets, many=True)), HTTPStatus.OK
 
+    @permission_required("create:tee_sets")
     def post(self, course_id):
         """Add new tee sets to a golf course."""
         Course.query.get_or_404(course_id, "The course does not exist")
@@ -30,6 +31,7 @@ class TeeSetsResource(MethodView):
 
         return jsonify(message="The tee sets have been added to the golf course"), HTTPStatus.CREATED
 
+    @permission_required("delete:tee_sets")
     def delete(self, course_id):
         """Delete tee sets from a golf course."""
         course = Course.query.get_or_404(course_id, "The course does not exist")
@@ -48,6 +50,7 @@ class TeeSetResource(MethodView):
         tee_set = TeeSet.query.get_or_404((course_id, tee_color_id), "The tees do not exist")
         return jsonify(schema.dump(tee_set)), HTTPStatus.OK
 
+    @permission_required("delete:tee_sets")
     def delete(self, course_id, tee_color_id):
         """Delete the set of tees with the given color from the given course."""
         tee_set = TeeSet.query.get_or_404((course_id, tee_color_id), "The tees do not exist")

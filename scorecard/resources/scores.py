@@ -4,12 +4,12 @@ from http import HTTPStatus
 
 from flask import jsonify, request
 from flask.views import MethodView
-from werkzeug.exceptions import BadRequest
-
 from scorecard.models.hole import Hole
 from scorecard.models.match import Match
 from scorecard.models.match_participant import MatchParticipant
 from scorecard.models.score import Score, ScoreSchema
+from scorecard.resources.view_decorators import permission_required
+from werkzeug.exceptions import BadRequest
 
 schema = ScoreSchema()
 
@@ -23,6 +23,7 @@ class HoleScoresResource(MethodView):
         scores = Score.query.filter_by(match_id=match_id, hole_number=hole_number)
         return jsonify(schema.dump(scores, many=True)), HTTPStatus.OK
 
+    @permission_required("create:scores")
     def post(self, match_id, hole_number):
         """Record players' scores in a match."""
         match = self._check_route_parameters(match_id, hole_number)

@@ -4,12 +4,12 @@ from http import HTTPStatus
 
 from flask import jsonify, request
 from flask.views import MethodView
-from werkzeug.exceptions import BadRequest
-
 from scorecard.models.player import Player, PlayerSchema
 from scorecard.models.team import Team
 from scorecard.models.team_member import TeamMember, TeamMemberSchema
 from scorecard.models.tournament import Tournament
+from scorecard.resources.view_decorators import permission_required
+from werkzeug.exceptions import BadRequest
 
 player_schema = PlayerSchema()
 member_schema = TeamMemberSchema()
@@ -27,6 +27,7 @@ class TeamMembersResource(MethodView):
 
         return jsonify(player_schema.dump(players, many=True)), HTTPStatus.OK
 
+    @permission_required("update:tournament")
     def post(self, tournament_id, team_id):
         """Add new players to a team."""
         players = self._get_players(tournament_id, team_id)
@@ -37,6 +38,7 @@ class TeamMembersResource(MethodView):
 
         return jsonify(message="The players were added to the team"), HTTPStatus.CREATED
 
+    @permission_required("update:tournament")
     def delete(self, tournament_id, team_id):
         """Remove the players from the team."""
         players = self._get_players(tournament_id, team_id)

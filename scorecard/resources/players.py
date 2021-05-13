@@ -52,6 +52,7 @@ class PlayerResource(MethodView):
         """Return the player with the given ID."""
         return jsonify(schema.dump(Player.query.get_or_404(id))), HTTPStatus.OK
 
+    @permission_required("update:players")
     def put(self, id):
         """Update the player with the given ID."""
         player = Player.query.get_or_404(id, "The player does not exist")
@@ -70,6 +71,7 @@ class PlayerResource(MethodView):
 class PlayerPhotoResource(MethodView):
     """Dispatches a request method to upload player profile photos."""
 
+    @permission_required("update:players")
     def put(self, id):
         """Upload an image."""
         player = Player.query.get_or_404(id, "The player does not exist")

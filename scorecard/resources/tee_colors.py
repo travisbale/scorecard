@@ -4,9 +4,9 @@ from http import HTTPStatus
 
 from flask.json import jsonify, request
 from flask.views import MethodView
-from werkzeug.exceptions import Conflict
-
 from scorecard.models.tee_color import TeeColor, TeeColorSchema
+from scorecard.resources.view_decorators import permission_required
+from werkzeug.exceptions import Conflict
 
 schema = TeeColorSchema()
 
@@ -18,6 +18,7 @@ class TeeColorsResource(MethodView):
         """Return a list of available tee colors for golf courses."""
         return jsonify(schema.dump(TeeColor.query.all(), many=True)), HTTPStatus.OK
 
+    @permission_required("create:tee_colors")
     def post(self):
         """Create a new tee color."""
         tee_color = schema.load(request.get_json())
