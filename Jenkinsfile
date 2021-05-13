@@ -5,14 +5,14 @@ pipeline {
     IMAGE_TAG = "${env.BRANCH_NAME == 'master' ? '0.1' : '0.1-rc'}"
     ENV_FILE = "${env.BRANCH_NAME == 'master' ? 'prod.env' : 'staging.env'}"
     CONTAINER_NAME = "${env.BRANCH_NAME == 'master' ? 'scorecard' : 'scorecard-rc'}"
-    KEY_DIR = "${env.BRANCH_NAME == 'master' ? 'prod' : 'staging'}"
+    ENV_DIR = "${env.BRANCH_NAME == 'master' ? 'prod' : 'staging'}"
   }
 
   stages {
     stage('Build') {
       steps {
         sh 'mkdir -p keys'
-        sh 'cp /home/keys/$KEY_DIR/heimdall.pub keys'
+        sh 'cp /home/keys/$ENV_DIR/heimdall.pub keys'
         sh 'docker build -t scorecard:$IMAGE_TAG .'
         sh 'docker build -t scorecard-test:$IMAGE_TAG --target test .'
       }
@@ -41,6 +41,7 @@ pipeline {
             --name $CONTAINER_NAME \
             --env-file /home/env/scorecard/$ENV_FILE \
             --network=ec2-user_default \
+            --volume /home/ec2-user/uploads/scorecard/$ENV_DIR/player-photos:/uploads/player-photos \
             scorecard:$IMAGE_TAG
         '''
       }

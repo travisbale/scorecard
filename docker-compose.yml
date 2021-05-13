@@ -13,6 +13,7 @@ services:
       - '5678:5678'
     volumes:
       - ./:/app
+      - ~/dev/uploads/scorecard/player-photos:/uploads/player-photos
 
   scorecard-test:
     build:

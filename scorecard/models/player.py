@@ -17,14 +17,17 @@ class Player(BaseModel):
     first_name = db.Column(db.String(32), nullable=False)
     last_name = db.Column(db.String(32), nullable=False)
     hdcp = db.Column(db.Integer, default=0, nullable=False)
+    photo_path = db.Column(db.String, default="", nullable=False)
+    biography = db.Column(db.Text, default="", nullable=False)
 
     memberships = db.relationship("TeamMember", back_populates="player", cascade="all, delete-orphan")
     match_participations = db.relationship("MatchParticipant", back_populates="player")
 
-    def __init__(self, email, first_name, last_name, hdcp=0):
+    def __init__(self, email, first_name, last_name, biography, hdcp=0):
         self.email = email
         self.first_name = first_name
         self.last_name = last_name
+        self.biography = biography
         self.hdcp = hdcp
 
     @property
@@ -60,14 +63,15 @@ class PlayerSchema(BaseSchema):
     first_name = fields.String(required=True)
     last_name = fields.String(required=True)
     full_name = fields.String(dump_only=True)
+    photo_path = fields.String(dump_only=True)
     hdcp = fields.Integer()
+    biography = fields.String()
+
     confidence = fields.Constant(0, dump_only=True)
     wins = fields.Constant(0, dump_only=True)
     losses = fields.Constant(0, dump_only=True)
     ties = fields.Constant(0, dump_only=True)
     cups = fields.Constant(0, dump_only=True)
-    bio = fields.Constant("Player biography", dump_only=True)
-    pictureUrl = fields.Constant("/img/fordyce.png", dump_only=True)
     level = fields.Constant("white", dump_only=True)
 
     @post_load
