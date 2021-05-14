@@ -1,11 +1,10 @@
 """Message service module."""
 
+import json
 import os
 
 import pika
 from itsdangerous import URLSafeSerializer
-
-from .message_schemas import InvitationEmailSchema
 
 user = os.getenv("RABBITMQ_DEFAULT_USER")
 password = os.getenv("RABBITMQ_DEFAULT_PASS")
@@ -19,10 +18,9 @@ class MessageService:
     serializer = URLSafeSerializer(os.getenv("SECRET_KEY"), salt=os.getenv("HASH_SALT"))
 
     def send_invitation(self, player):
-        schema = InvitationEmailSchema()
-        token = self.serializer.dumps(player.email)
+        token = self.serializer.dumps(json.dumps({"email": player.email, "roles": ["player"]}))
         url = f"{os.getenv('USER_REGISTRATION_URL')}/{token}"
-        message = schema.dumps(
+        message = json.dumps(
             {"first_name": player.first_name, "last_name": player.last_name, "email": player.email, "url": url}
         )
 
