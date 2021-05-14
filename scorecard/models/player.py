@@ -1,7 +1,5 @@
 """Player module."""
 
-from enum import Enum
-
 from marshmallow import fields
 from marshmallow.decorators import post_load
 from scorecard import db
@@ -38,6 +36,11 @@ class Player(BaseModel):
     def full_name(self):
         """Return the player's full name."""
         return f"{self.first_name} {self.last_name}"
+
+    @property
+    def tournaments(self):
+        """Return the tournaments the player has played in."""
+        return [membership.tournament for membership in self.memberships]
 
     @property
     def matches(self):
