@@ -27,7 +27,12 @@ class PlayersResource(MethodView):
 
     def get(self):
         """Return the list of all players."""
-        return jsonify(schema.dump(Player.query.order_by(Player.first_name.asc()).all(), many=True)), HTTPStatus.OK
+        query = Player.query.order_by(Player.first_name.asc())
+
+        if request.args and request.args.get("email"):
+            query = query.filter_by(email=request.args.get("email"))
+
+        return jsonify(schema.dump(query.all(), many=True)), HTTPStatus.OK
 
     @permission_required("create:players")
     def post(self):
