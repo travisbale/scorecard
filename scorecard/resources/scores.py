@@ -4,12 +4,14 @@ from http import HTTPStatus
 
 from flask import jsonify, request
 from flask.views import MethodView
+from flask_jwt_extended import get_jwt_identity
 from scorecard.models.hole import Hole
 from scorecard.models.match import Match
 from scorecard.models.match_participant import MatchParticipant
+from scorecard.models.player import Player
 from scorecard.models.score import Score, ScoreSchema
 from scorecard.resources.view_decorators import permission_required
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, Forbidden
 
 schema = ScoreSchema()
 
@@ -26,6 +28,7 @@ class HoleScoresResource(MethodView):
     @permission_required("create:scores")
     def post(self, match_id, hole_number):
         """Record players' scores in a match."""
+        player = Player.query.filter_by(email=get_jwt_identity()).first()
         match = self._check_route_parameters(match_id, hole_number)
         scores = schema.load(request.get_json(), many=True)
 
@@ -36,6 +39,9 @@ class HoleScoresResource(MethodView):
 
         if len(scores) != participants.count():
             raise BadRequest(description="One or more players are not in the match.")
+
+        if player is not None and participants.filter_by(player_id=player.id).count() == 0:
+            raise Forbidden(description="You do not have permission to edit the score in this match")
 
         for score in scores:
             score.match_id = match_id
