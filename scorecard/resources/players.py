@@ -44,9 +44,6 @@ class PlayersResource(MethodView):
 
         player.save()
 
-        # Send an email, inviting the player to create an account
-        message_service.send_invitation(player)
-
         return jsonify(schema.dump(player)), HTTPStatus.CREATED
 
 
@@ -101,6 +98,19 @@ class PlayerPhotoResource(MethodView):
         raise BadRequest("File file type is invalid")
 
 
+class PlayerAccountInvitationResource(MethodView):
+    """Dispatches a request method to send an account creation email to the player."""
+
+    @permission_required("create:players")
+    def post(self, id):
+        """Send the account creation email."""
+        player = Player.query.get_or_404(id, "The player does not exist")
+
+        message_service.send_invitation(player)
+
+        return jsonify(schema.dump(player)), HTTPStatus.OK
+
+
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "bmp", "webp"}
 
 
@@ -118,3 +128,7 @@ def register_resources(bp):
     bp.add_url_rule("/players", view_func=PlayersResource.as_view("players_resource"))
     bp.add_url_rule("/players/<int:id>", view_func=PlayerResource.as_view("player_resource"))
     bp.add_url_rule("/players/<int:id>/photo", view_func=PlayerPhotoResource.as_view("player_photo_resource"))
+    bp.add_url_rule(
+        "/players/<int:id>/invitation",
+        view_func=PlayerAccountInvitationResource.as_view("player_account_invitation_resource"),
+    )
