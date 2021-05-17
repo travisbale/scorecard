@@ -1,5 +1,6 @@
 """Match scores module."""
 
+from datetime import datetime
 from http import HTTPStatus
 
 from flask import jsonify, request
@@ -39,6 +40,12 @@ class HoleScoresResource(MethodView):
 
         if len(scores) != participants.count():
             raise BadRequest(description="One or more players are not in the match.")
+
+        if match.tee_time > datetime.now():
+            raise BadRequest(description="This match hasn't started yet")
+
+        if match.finished:
+            raise BadRequest(description="This match has already been completed")
 
         if player is not None and participants.filter_by(player_id=player.id).count() == 0:
             raise Forbidden(description="You do not have permission to edit the score in this match")
