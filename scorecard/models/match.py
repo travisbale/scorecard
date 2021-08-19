@@ -2,7 +2,6 @@
 
 import numpy as np
 from marshmallow import fields, post_load
-
 from scorecard import db
 
 from .base import BaseModel, BaseSchema
@@ -82,21 +81,23 @@ class Match(BaseModel):
                     status_text = scores[-1]["statusText"]
                 elif matchStatus == 0:
                     if len(scores) < 18:
-                        status_text = 'AS'
+                        status_text = "AS"
                     else:
-                        status_text = 'HALVED'
+                        status_text = "HALVED"
                 else:
                     if abs(matchStatus) > 18 - len(scores) and len(scores) != 18:
                         status_text = f"{abs(matchStatus)} & {18 - len(scores)}"
                     else:
                         status_text = f"{abs(matchStatus)} UP"
 
-                scores.append({
+                scores.append(
+                    {
                     "redTeamScore": red_score,
                     "blueTeamScore": blue_score,
                     "matchStatus": matchStatus,
-                    "statusText": status_text
-                })
+                        "statusText": status_text,
+                    }
+                )
 
         return scores[1:]
 
