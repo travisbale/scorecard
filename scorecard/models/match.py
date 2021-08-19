@@ -92,9 +92,9 @@ class Match(BaseModel):
 
                 scores.append(
                     {
-                    "redTeamScore": red_score,
-                    "blueTeamScore": blue_score,
-                    "matchStatus": matchStatus,
+                        "redTeamScore": red_score,
+                        "blueTeamScore": blue_score,
+                        "matchStatus": matchStatus,
                         "statusText": status_text,
                     }
                 )
@@ -123,7 +123,8 @@ class Match(BaseModel):
             if len(participant.scores) == 0:
                 return False
 
-        return True
+        # Match hasn't started if there are no participants
+        return len(self.participants) > 0
 
     @property
     def finished(self):
