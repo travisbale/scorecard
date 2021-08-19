@@ -10,6 +10,8 @@ alembic==1.5.8
     #   flask-migrate
 appdirs==1.4.4
     # via black
+attrs==21.2.0
+    # via pytest
 black==21.4b1
     # via -r requirements/dev.in
 cffi==1.14.5
@@ -49,6 +51,8 @@ greenlet==1.0.0
     #   sqlalchemy
 gunicorn==20.1.0
     # via -r requirements/production.txt
+iniconfig==1.1.1
+    # via pytest
 itsdangerous==1.1.0
     # via
     #   -r requirements/production.txt
@@ -74,6 +78,8 @@ mypy-extensions==0.4.3
     # via black
 numpy==1.20.2
     # via -r requirements/production.txt
+packaging==21.0
+    # via pytest
 pathspec==0.8.1
     # via black
 pep517==0.10.0
@@ -82,8 +88,12 @@ pika==1.2.0
     # via -r requirements/production.txt
 pip-tools==6.1.0
     # via -r requirements/dev.in
+pluggy==0.13.1
+    # via pytest
 psycopg2-binary==2.8.6
     # via -r requirements/production.txt
+py==1.10.0
+    # via pytest
 pycodestyle==2.7.0
     # via flake8
 pycparser==2.20
@@ -98,6 +108,10 @@ pyjwt==2.0.1
     # via
     #   -r requirements/production.txt
     #   flask-jwt-extended
+pyparsing==2.4.7
+    # via packaging
+pytest==6.2.4
+    # via -r requirements/dev.in
 python-dateutil==2.8.1
     # via
     #   -r requirements/production.txt
@@ -123,7 +137,10 @@ sqlalchemy==1.4.11
     #   alembic
     #   flask-sqlalchemy
 toml==0.10.2
-    # via black
+    # via
+    #   black
+    #   pep517
+    #   pytest
 werkzeug==1.0.1
     # via
     #   -r requirements/production.txt
