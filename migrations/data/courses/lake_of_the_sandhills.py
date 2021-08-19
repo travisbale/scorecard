@@ -1,4 +1,11 @@
-"A script to create the Lake of the Sandhills golf course."
+"""
+A script to create the Lake of the Sandhills golf course.
+
+To perform the migration run the following commands:
+
+>>> from migrations.data.courses import lake_of_the_sandhills
+>>> lake_of_the_sandhills.create()
+"""
 
 from scorecard import db
 from scorecard.models.course import Course
