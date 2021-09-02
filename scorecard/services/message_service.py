@@ -24,7 +24,7 @@ class MessageService:
             {"first_name": player.first_name, "last_name": player.last_name, "email": player.email, "url": url}
         )
 
-        self._send(f"{os.getenv('FLASK_ENV')}.player_invitations", message)
+        self._send(f"{os.getenv('RABBITMQ_PREFIX')}.player_invitations", message)
 
     def _send(self, queue, message):
         credentials = pika.PlainCredentials(user, password)
