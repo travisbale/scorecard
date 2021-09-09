@@ -59,6 +59,7 @@ class ScoreSchema(BaseSchema):
     net_strokes = fields.Integer(dump_only=True)
     hole_number = fields.Integer(dump_only=True)
     player_name = fields.String(attribute="participant.player.full_name", dump_only=True)
+    player_tier = fields.String(attribute="participant.player.tier", dump_only=True)
 
     @post_load
     def load_match_score(self, data, **kwargs):
