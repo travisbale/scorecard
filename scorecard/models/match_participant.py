@@ -58,4 +58,5 @@ class MatchParticipantSchema(BaseSchema):
     email = fields.Email(attribute="player.email", dump_only=True)
     last_name = fields.String(attribute="player.last_name", dump_only=True)
     full_name = fields.String(attribute="player.full_name", dump_only=True)
+    tier = fields.String(attribute="player.tier", dump_only=True)
     hdcp_strokes = fields.List(fields.Integer, dump_only=True)
