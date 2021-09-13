@@ -128,8 +128,11 @@ class Match(BaseModel):
 
     @property
     def finished(self):
+        if len(self.participants) == 0:
+            return False
         if len(self.scores) > 0 and self.scores[-1]["statusText"].find("&") > 0:
             return True
+
         for participant in self.participants:
             if len(participant.scores) < 18:
                 return False
