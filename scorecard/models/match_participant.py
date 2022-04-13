@@ -56,6 +56,7 @@ class MatchParticipantSchema(BaseSchema):
     team = fields.Pluck("TeamSchema", "name", dump_only=True)
     player_id = fields.Integer(attribute="player.id", dump_only=True)
     email = fields.Email(attribute="player.email", dump_only=True)
+    first_name = fields.String(attribute="player.first_name", dump_only=True)
     last_name = fields.String(attribute="player.last_name", dump_only=True)
     full_name = fields.String(attribute="player.full_name", dump_only=True)
     tier = fields.String(attribute="player.tier", dump_only=True)
