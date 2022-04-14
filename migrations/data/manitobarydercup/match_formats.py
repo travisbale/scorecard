@@ -1,4 +1,11 @@
-"""A script to create the available match formats."""
+"""
+A script to create the available match formats.
+
+To perform the migration run the following commands:
+
+>>> from migrations.data.manitobarydercup import match_formats
+>>> match_formats.create()
+"""
 
 from scorecard import db
 from scorecard.models.match_format import MatchFormat
@@ -39,6 +46,14 @@ def create():
         " odd-numbered holes, and the other hitting first on"
         " even-numbered holes. The team with the low score on each hole"
         " wins that hole. If their scores are tied, the hole is halved.",
+    )
+    _create_match_format(
+        "Modified Scotch",
+        "In modified scotch, each two man team hits a tee shot. The team then"
+        " selects which ball they would like to hit for their second shot."
+        " the player who did not hit the selected ball must take the second"
+        " shot. After that the hole is played as a scramble where both players"
+        " hit a shot and the ball is played from the better position.",
     )
 
     db.session.commit()
