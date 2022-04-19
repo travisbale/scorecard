@@ -61,12 +61,21 @@ class MatchResource(MethodView):
         return jsonify(message="The match has been deleted")
 
 
+class MatchesResource(MethodView):
+    """Dispatches request methods to retrieve matches."""
+
+    def get(self):
+        """Return a list of all matches"""
+        return jsonify(schema.dump(Match.query.all(), many=True)), HTTPStatus.OK
+
+
 def register_resources(bp):
     """Add the resource routes to the application blueprint."""
     bp.add_url_rule(
         "/tournaments/<int:tournament_id>/matches",
         view_func=TournamentMatchesResource.as_view("tournament_matches_resource"),
     )
+    bp.add_url_rule("/matches", view_func=MatchesResource.as_view("matches_resource"))
     bp.add_url_rule("/matches/<int:match_id>", view_func=MatchResource.as_view("match_resource"))
     bp.add_url_rule(
         "/players/<int:player_id>/matches", view_func=PlayerMatchesResource.as_view("player_matches_resource")
