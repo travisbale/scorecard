@@ -3,8 +3,8 @@ A script to create the matches for the 2022 Manitoba Ryder Cup
 
 To perform the migration run the following commands:
 
->>> from migrations.data.tournaments import kenora_ryder
->>> kenora_ryder.create()
+>>> from migrations.data.tournaments import 2022ryder
+>>> 2022ryder.create()
 """
 
 from datetime import datetime
@@ -18,8 +18,13 @@ from scorecard.models.tournament import Tournament
 
 
 def create():
-    tournament = Tournament("Manitoba Ryder Cup", datetime(2022, 6, 4), datetime(2022, 6, 5), "Kenora, Ontario, Canada")
-    tournament.save()
+    tournament = Tournament.query.filter_by(start_date=datetime(2022, 6, 3)).first()
+
+    if tournament is None:
+        tournament = Tournament(
+            "Manitoba Ryder Cup", datetime(2022, 6, 3), datetime(2022, 6, 5), "Buffalo Point, Manitoba, Canada"
+        )
+        tournament.save()
 
     kenora = Course.query.filter_by(name="Kenora Golf & Country Club").first()
     beauty_bay = Course.query.filter_by(name="Beauty Bay Golf Course").first()
