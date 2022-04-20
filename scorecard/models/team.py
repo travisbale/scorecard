@@ -1,8 +1,9 @@
 """Team module."""
 
+from marshmallow import fields
 from scorecard import db
 
-from .base import BaseModel
+from .base import BaseModel, BaseSchema
 
 
 class Team(BaseModel):
@@ -48,3 +49,10 @@ class Team(BaseModel):
 
     def __repr__(self):
         return f"<Team {self.name}>"
+
+
+class TeamSchema(BaseSchema):
+    """Schema used to view teams."""
+
+    id = fields.Integer(dump_only=True)
+    name = fields.String(dump_only=True)

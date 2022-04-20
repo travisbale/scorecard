@@ -42,7 +42,7 @@ class PlayerMatchesResource(MethodView):
     def get(self, player_id):
         """Return the matches that the player has played in."""
         player = Player.query.get_or_404(player_id, "The player does not exist")
-        return jsonify(schema.dump(player.matches, many=True)), HTTPStatus.OK
+        return jsonify(schema.dump(player.get_matches(), many=True)), HTTPStatus.OK
 
 
 class MatchResource(MethodView):

@@ -37,7 +37,7 @@ class PlayerTournamentsResource(MethodView):
     def get(self, player_id):
         """Return a list of the tournaments the player has played in."""
         player = Player.query.get_or_404(player_id, "The player does not exist")
-        return jsonify(schema.dump(player.tournaments, many=True)), HTTPStatus.OK
+        return jsonify(schema.dump(player.get_tournaments(), many=True)), HTTPStatus.OK
 
 
 class TournamentResource(MethodView):

@@ -37,13 +37,11 @@ class Player(BaseModel):
         """Return the player's full name."""
         return f"{self.first_name} {self.last_name}"
 
-    @property
-    def tournaments(self):
+    def get_tournaments(self):
         """Return the tournaments the player has played in."""
         return [membership.tournament for membership in self.memberships]
 
-    @property
-    def matches(self):
+    def get_matches(self):
         """Return the matches the player has played in."""
         return [participation.match for participation in self.match_participations]
 
@@ -57,6 +55,37 @@ class Player(BaseModel):
 
     def get_hdcp_strokes(self, hole_hdcp):
         return self.hdcp // 18 + (1 if self.hdcp % 18 >= hole_hdcp else 0)
+
+    def get_wins(self):
+        wins = 0
+        for participation in self.match_participations:
+            if participation.team.name == participation.match.winner:
+                wins += 1
+        return wins
+
+    def get_losses(self):
+        losses = 0
+        for participation in self.match_participations:
+            if participation.team.name != participation.match.winner:
+                losses += 1
+        return losses
+
+    def get_ties(self):
+        ties = 0
+        for participation in self.match_participations:
+            if participation.match.winner == "Tied":
+                ties += 1
+        return ties
+
+    def get_cups(self):
+        cups = 0
+
+        for membership in self.memberships:
+            winner = membership.tournament.get_winning_team()
+            if winner is not None and winner.name == membership.team.name:
+                cups += 1
+
+        return cups
 
     def __repr__(self):
         return f"<Player {self.first_name} {self.last_name}>"
@@ -75,11 +104,10 @@ class PlayerSchema(BaseSchema):
     biography = fields.String()
     tier = fields.String()
 
-    confidence = fields.Constant(0, dump_only=True)
-    wins = fields.Constant(0, dump_only=True)
-    losses = fields.Constant(0, dump_only=True)
-    ties = fields.Constant(0, dump_only=True)
-    cups = fields.Constant(0, dump_only=True)
+    wins = fields.Function(lambda player: player.get_wins(), dump_only=True)
+    losses = fields.Function(lambda player: player.get_losses(), dump_only=True)
+    ties = fields.Function(lambda player: player.get_ties(), dump_only=True)
+    cups = fields.Function(lambda player: player.get_cups(), dump_only=True)
 
     @post_load
     def load_player(self, data, **kwargs):

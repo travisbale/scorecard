@@ -47,6 +47,18 @@ class Tournament(BaseModel):
 
         return result
 
+    def is_finished(self):
+        return len(list(filter(lambda m: not m.finished, self.matches))) == 0
+
+    def get_winning_team(self):
+        if not self.is_finished():
+            return None
+
+        blueTeam = Team.query.filter_by(name="Blue").first()
+        redTeam = Team.query.filter_by(name="Red").first()
+
+        return redTeam if redTeam.get_points(self) > blueTeam.get_points(self) else blueTeam
+
     def __repr__(self):
         return f"<Tournament {self.start_date.year} {self.name}>"
 
@@ -54,7 +66,7 @@ class Tournament(BaseModel):
 class TournamentSchema(BaseSchema):
     """Serializes and deserializes tournaments."""
 
-    class TeamSchema(BaseSchema):
+    class TournamentTeamSchema(BaseSchema):
         name = fields.String(required=True)
         captain = fields.Nested("PlayerSchema", dump_only=True)
         points = fields.Float(dump_only=True)
@@ -64,7 +76,7 @@ class TournamentSchema(BaseSchema):
     start_date = fields.Date(required=True)
     end_date = fields.Date(required=True)
     location = fields.String(required=True)
-    teams = fields.Nested("TeamSchema", many=True, dump_only=True)
+    teams = fields.Nested("TournamentTeamSchema", many=True, dump_only=True)
 
     @post_load
     def load_tournament(self, data, **kwargs):
