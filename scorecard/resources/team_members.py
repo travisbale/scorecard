@@ -27,7 +27,7 @@ class TeamMembersResource(MethodView):
 
         return jsonify(player_schema.dump(players, many=True)), HTTPStatus.OK
 
-    @permission_required("update:tournament")
+    @permission_required("update:tournaments")
     def post(self, tournament_id, team_id):
         """Add new players to a team."""
         players = self._get_players(tournament_id, team_id)
@@ -38,7 +38,7 @@ class TeamMembersResource(MethodView):
 
         return jsonify(message="The players were added to the team"), HTTPStatus.CREATED
 
-    @permission_required("update:tournament")
+    @permission_required("update:tournaments")
     def delete(self, tournament_id, team_id):
         """Remove the players from the team."""
         players = self._get_players(tournament_id, team_id)
