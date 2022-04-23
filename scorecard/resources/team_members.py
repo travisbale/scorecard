@@ -44,6 +44,7 @@ class TeamMembersResource(MethodView):
         players = self._get_players(tournament_id, team_id)
         memberships = TeamMember.query.filter(
             TeamMember.player_id.in_(map(lambda player: player.id, players)),
+            TeamMember.tournament_id == tournament_id,
             TeamMember.team_id == team_id,
         )
 
