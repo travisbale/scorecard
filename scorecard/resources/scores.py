@@ -5,7 +5,7 @@ from http import HTTPStatus
 
 from flask import jsonify, request
 from flask.views import MethodView
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import get_jwt, get_jwt_identity
 from scorecard.models.hole import Hole
 from scorecard.models.match import Match
 from scorecard.models.match_participant import MatchParticipant
@@ -32,6 +32,7 @@ class HoleScoresResource(MethodView):
         player = Player.query.filter_by(email=get_jwt_identity()).first()
         match = self._check_route_parameters(match_id, hole_number)
         scores = schema.load(request.get_json(), many=True)
+        isAdmin = True if "Administrator" in get_jwt()["roles"] else False
 
         participants = MatchParticipant.query.filter(
             MatchParticipant.player_id.in_(map(lambda score: score.player_id, scores)),
@@ -44,10 +45,10 @@ class HoleScoresResource(MethodView):
         if match.tee_time > datetime.now():
             raise BadRequest(description="This match hasn't started yet")
 
-        if match.finished:
+        if not isAdmin and match.finished:
             raise BadRequest(description="This match has already been completed")
 
-        if player is not None and participants.filter_by(player_id=player.id).count() == 0:
+        if not isAdmin and player is not None and participants.filter_by(player_id=player.id).count() == 0:
             raise Forbidden(description="You do not have permission to edit the score in this match")
 
         for score in scores:
