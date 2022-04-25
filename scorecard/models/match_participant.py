@@ -52,12 +52,7 @@ class MatchParticipant(BaseModel):
 class MatchParticipantSchema(BaseSchema):
     """Serializes and deserializes match participants."""
 
-    player_ids = fields.List(fields.Integer, required=True)
+    player_ids = fields.List(fields.Integer, load_only=True, required=True)
+    player = fields.Nested("PlayerSchema", dump_only=True)
     team = fields.Pluck("TeamSchema", "name", dump_only=True)
-    player_id = fields.Integer(attribute="player.id", dump_only=True)
-    email = fields.Email(attribute="player.email", dump_only=True)
-    first_name = fields.String(attribute="player.first_name", dump_only=True)
-    last_name = fields.String(attribute="player.last_name", dump_only=True)
-    full_name = fields.String(attribute="player.full_name", dump_only=True)
-    tier = fields.String(attribute="player.tier", dump_only=True)
     hdcp_strokes = fields.List(fields.Integer, dump_only=True)
