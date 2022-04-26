@@ -61,12 +61,17 @@ class MatchResource(MethodView):
         return jsonify(message="The match has been deleted")
 
 
-class MatchesResource(MethodView):
-    """Dispatches request methods to retrieve matches."""
+class MatchCountResource(MethodView):
+    """
+    Dispatches request methods to count the number of matches.
+
+    This endpoint was added for performance reasons. Retrieving the entire list
+    of matches was taking over 10 seconds for ~250 matches.
+    """
 
     def get(self):
-        """Return a list of all matches"""
-        return jsonify(schema.dump(Match.query.all(), many=True)), HTTPStatus.OK
+        """Return the number of total matches."""
+        return jsonify(Match.query.count()), HTTPStatus.OK
 
 
 def register_resources(bp):
@@ -75,7 +80,7 @@ def register_resources(bp):
         "/tournaments/<int:tournament_id>/matches",
         view_func=TournamentMatchesResource.as_view("tournament_matches_resource"),
     )
-    bp.add_url_rule("/matches", view_func=MatchesResource.as_view("matches_resource"))
+    bp.add_url_rule("/matches", view_func=MatchCountResource.as_view("matches_resource"))
     bp.add_url_rule("/matches/<int:match_id>", view_func=MatchResource.as_view("match_resource"))
     bp.add_url_rule(
         "/players/<int:player_id>/matches", view_func=PlayerMatchesResource.as_view("player_matches_resource")
