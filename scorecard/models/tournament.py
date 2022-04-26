@@ -48,7 +48,7 @@ class Tournament(BaseModel):
         return result
 
     def is_finished(self):
-        return len(list(filter(lambda m: not m.finished, self.matches))) == 0
+        return len(self.matches) > 0 and len(list(filter(lambda m: not m.finished, self.matches))) == 0
 
     def get_winning_team(self):
         if not self.is_finished():
@@ -77,6 +77,7 @@ class TournamentSchema(BaseSchema):
     end_date = fields.Date(required=True)
     location = fields.String(required=True)
     teams = fields.Nested("TournamentTeamSchema", many=True, dump_only=True)
+    is_finished = fields.Function(lambda tournament: tournament.is_finished(), dump_only=True)
 
     @post_load
     def load_tournament(self, data, **kwargs):
