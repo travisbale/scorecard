@@ -80,10 +80,7 @@ class Match(BaseModel):
                 if scores[-1]["statusText"].find("&") != -1:
                     status_text = scores[-1]["statusText"]
                 elif matchStatus == 0:
-                    if len(scores) < 18:
-                        status_text = "AS"
-                    else:
-                        status_text = "HALVED"
+                    status_text = "AS"
                 else:
                     if abs(matchStatus) > 18 - len(scores) and len(scores) != 18:
                         status_text = f"{abs(matchStatus)} & {18 - len(scores)}"
