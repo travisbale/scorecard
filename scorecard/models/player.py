@@ -66,7 +66,7 @@ class Player(BaseModel):
     def get_losses(self):
         losses = 0
         for participation in self.match_participations:
-            if participation.team.name != participation.match.winner:
+            if participation.match.finished and participation.team.name != participation.match.winner:
                 losses += 1
         return losses
 
