@@ -91,18 +91,21 @@ class Player(BaseModel):
         return f"<Player {self.first_name} {self.last_name}>"
 
 
-class PlayerSchema(BaseSchema):
-    """Serializes and deserializes player objects."""
-
+class MinimalPlayerSchema(BaseSchema):
     id = fields.Integer(dump_only=True)
-    email = fields.Email(required=True)
     first_name = fields.String(required=True)
     last_name = fields.String(required=True)
     full_name = fields.String(dump_only=True)
     photo_path = fields.String(dump_only=True)
+    tier = fields.String()
+
+
+class PlayerSchema(MinimalPlayerSchema):
+    """Serializes and deserializes player objects."""
+
+    email = fields.Email(required=True)
     hdcp = fields.Integer()
     biography = fields.String()
-    tier = fields.String()
 
     wins = fields.Function(lambda player: player.get_wins(), dump_only=True)
     losses = fields.Function(lambda player: player.get_losses(), dump_only=True)

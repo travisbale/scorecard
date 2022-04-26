@@ -53,5 +53,5 @@ class MatchParticipantSchema(BaseSchema):
     """Serializes and deserializes match participants."""
 
     player_ids = fields.List(fields.Integer, load_only=True, required=True)
-    player = fields.Nested("PlayerSchema", dump_only=True)
+    player = fields.Nested("MinimalPlayerSchema", dump_only=True)
     team = fields.Pluck("TeamSchema", "name", dump_only=True)
