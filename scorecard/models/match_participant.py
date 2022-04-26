@@ -55,4 +55,3 @@ class MatchParticipantSchema(BaseSchema):
     player_ids = fields.List(fields.Integer, load_only=True, required=True)
     player = fields.Nested("PlayerSchema", dump_only=True)
     team = fields.Pluck("TeamSchema", "name", dump_only=True)
-    hdcp_strokes = fields.List(fields.Integer, dump_only=True)
