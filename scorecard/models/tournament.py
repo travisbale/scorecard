@@ -68,7 +68,7 @@ class TournamentSchema(BaseSchema):
 
     class TournamentTeamSchema(BaseSchema):
         name = fields.String(required=True)
-        captain = fields.Nested("PlayerSchema", dump_only=True)
+        captain = fields.Nested("MinimalPlayerSchema", dump_only=True)
         points = fields.Float(dump_only=True)
 
     id = fields.Integer(dump_only=True)
