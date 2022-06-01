@@ -85,7 +85,7 @@ class PlayerPhotoResource(MethodView):
 
         if photo and is_filename_allowed(photo.filename):
             photo_name = f"{uuid.uuid4()}.{get_extension(photo.filename)}"
-            photo_path = os.path.join(os.getenv("UPLOAD_FOLDER"), photo_name)
+            photo_path = os.path.join(os.getenv("UPLOAD_FOLDER", ""), photo_name)
             photo.save(photo_path)
 
             if os.path.exists(player.photo_path):

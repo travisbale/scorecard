@@ -16,7 +16,7 @@ class Player(BaseModel):
     email = db.Column(db.String(255), unique=True, nullable=False)
     first_name = db.Column(db.String(32), nullable=False)
     last_name = db.Column(db.String(32), nullable=False)
-    hdcp = db.Column(db.Integer, default=0, nullable=False)
+    hdcp = db.Column(db.Float, default=0, nullable=False)
     photo_path = db.Column(db.String, default="", nullable=False)
     biography = db.Column(db.Text, default="", nullable=False)
     tier = db.Column(db.String(32), default="white", nullable=False)
@@ -107,7 +107,7 @@ class PlayerSchema(MinimalPlayerSchema):
     """Serializes and deserializes player objects."""
 
     email = fields.Email(required=True)
-    hdcp = fields.Integer()
+    hdcp = fields.Float()
     biography = fields.String()
 
     wins = fields.Function(lambda player: player.get_wins(), dump_only=True)

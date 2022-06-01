@@ -15,7 +15,7 @@ port = os.getenv("RABBITMQ_PORT")
 class MessageService:
     """Serializes and sends messages to a Rabbit message queue."""
 
-    serializer = URLSafeSerializer(os.getenv("SECRET_KEY"), salt=os.getenv("HASH_SALT"))
+    serializer = URLSafeSerializer(os.getenv("SECRET_KEY", ""), salt=os.getenv("HASH_SALT"))
 
     def send_invitation(self, player):
         token = self.serializer.dumps(json.dumps({"email": player.email, "roles": ["player"]}))
