@@ -12,4 +12,5 @@ marshmallow
 numpy
 pika
 psycopg2-binary
+redis
 simplejson

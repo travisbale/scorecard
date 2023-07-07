@@ -24,6 +24,15 @@ services:
     volumes:
       - ./:/app
 
+  scorecard-redis:
+    image: redis:7-alpine
+    restart: always
+    container_name: scorecard-redis
+    env_file: ./env/redis.env
+    volumes:
+      - redis_data:/data
+      - ./redis:/usr/local/etc/redis
+
   scorecard-db:
     image: postgres:12-alpine
     restart: always
@@ -34,3 +43,4 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
