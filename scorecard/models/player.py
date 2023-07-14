@@ -58,35 +58,35 @@ class Player(BaseModel):
 
     def get_wins(self):
         wins = 0
-        for participation in self.match_participations:
-            if participation.team.name == participation.match.winner:
-                wins += 1
+        # for participation in self.match_participations:
+        #     if participation.team.name == participation.match.winner:
+        #         wins += 1
         return wins
 
     def get_losses(self):
         losses = 0
-        for participation in self.match_participations:
-            team_name = participation.team.name
-            winner = participation.match.winner
-
-            if participation.match.finished and team_name != winner and winner != "Tied":
-                losses += 1
+        # for participation in self.match_participations:
+        #     team_name = participation.team.name
+        #     winner = participation.match.winner
+        #
+        #     if participation.match.finished and team_name != winner and winner != "Tied":
+        #         losses += 1
         return losses
 
     def get_ties(self):
         ties = 0
-        for participation in self.match_participations:
-            if participation.match.winner == "Tied":
-                ties += 1
+        # for participation in self.match_participations:
+        #     if participation.match.winner == "Tied":
+        #         ties += 1
         return ties
 
     def get_cups(self):
         cups = 0
 
-        for membership in self.memberships:
-            winner = membership.tournament.get_winning_team()
-            if winner is not None and winner.name == membership.team.name:
-                cups += 1
+        # for membership in self.memberships:
+        #     winner = membership.tournament.get_winning_team()
+        #     if winner is not None and winner.name == membership.team.name:
+        #         cups += 1
 
         return cups
 
