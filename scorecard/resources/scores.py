@@ -42,9 +42,6 @@ class HoleScoresResource(MethodView):
         if len(scores) != participants.count():
             raise BadRequest(description="One or more players are not in the match.")
 
-        if match.tee_time > datetime.now():
-            raise BadRequest(description="This match hasn't started yet")
-
         if not isAdmin and match.finished:
             raise BadRequest(description="This match has already been completed")
 
