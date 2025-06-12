@@ -1,6 +1,6 @@
 # Scorecard
 
-[![CI](https://github.com/travisbale/heimdall/actions/workflows/deploy.yml/badge.svg)](https://github.com/travisbale/heimdall/actions/workflows/deploy.yml)
+[![CI](https://github.com/travisbale/scorecard/actions/workflows/deploy.yml/badge.svg)](https://github.com/travisbale/scorecard/actions/workflows/deploy.yml)
 
 Scorecard is a score keeping API service for golf. Scorecard is able to provide live scoring updates for tournaments, as well as individual rounds of golf, and can support any number of players playing any format of golf.
 
