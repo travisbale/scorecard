@@ -4,8 +4,8 @@ FROM python:3.8-slim AS base
 WORKDIR /app
 
 # Set environment variables
-ENV PYTYONDONTWRITEBYTECODE 1
-ENV PYTHONBUFFERED 1
+ENV PYTYONDONTWRITEBYTECODE=1
+ENV PYTHONBUFFERED=1
 ENV FLASK_APP=scorecard
 
 # Install dependencies
