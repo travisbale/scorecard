@@ -20,6 +20,10 @@ class Player(BaseModel):
     photo_path = db.Column(db.String, default="", nullable=False)
     biography = db.Column(db.Text, default="", nullable=False)
     tier = db.Column(db.String(32), default="white", nullable=False)
+    cups = db.Column(db.Integer, default=0, nullable=False)
+    wins = db.Column(db.Integer, default=0, nullable=False)
+    ties = db.Column(db.Integer, default=0, nullable=False)
+    losses = db.Column(db.Integer, default=0, nullable=False)
 
     memberships = db.relationship("TeamMember", back_populates="player", cascade="all, delete-orphan")
     match_participations = db.relationship("MatchParticipant", back_populates="player")
@@ -56,40 +60,6 @@ class Player(BaseModel):
     def get_hdcp_strokes(self, hole_hdcp):
         return self.hdcp // 18 + (1 if self.hdcp % 18 >= hole_hdcp else 0)
 
-    def get_wins(self):
-        wins = 0
-        # for participation in self.match_participations:
-        #     if participation.team.name == participation.match.winner:
-        #         wins += 1
-        return wins
-
-    def get_losses(self):
-        losses = 0
-        # for participation in self.match_participations:
-        #     team_name = participation.team.name
-        #     winner = participation.match.winner
-        #
-        #     if participation.match.finished and team_name != winner and winner != "Tied":
-        #         losses += 1
-        return losses
-
-    def get_ties(self):
-        ties = 0
-        # for participation in self.match_participations:
-        #     if participation.match.winner == "Tied":
-        #         ties += 1
-        return ties
-
-    def get_cups(self):
-        cups = 0
-
-        # for membership in self.memberships:
-        #     winner = membership.tournament.get_winning_team()
-        #     if winner is not None and winner.name == membership.team.name:
-        #         cups += 1
-
-        return cups
-
     def __repr__(self):
         return f"<Player {self.first_name} {self.last_name}>"
 
@@ -110,11 +80,10 @@ class PlayerSchema(MinimalPlayerSchema):
     email = fields.Email(required=True)
     hdcp = fields.Float()
     biography = fields.String()
-
-    wins = fields.Function(lambda player: player.get_wins(), dump_only=True)
-    losses = fields.Function(lambda player: player.get_losses(), dump_only=True)
-    ties = fields.Function(lambda player: player.get_ties(), dump_only=True)
-    cups = fields.Function(lambda player: player.get_cups(), dump_only=True)
+    wins = fields.Integer(dump_only=True)
+    losses = fields.Integer(dump_only=True)
+    ties = fields.Integer(dump_only=True)
+    cups = fields.Integer(dump_only=True)
 
     @post_load
     def load_player(self, data, **kwargs):
